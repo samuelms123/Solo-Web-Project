@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="styles.css" />
     <title>Opiskelija Ravintolat</title>
@@ -14,7 +13,8 @@
     <header class="header-default">
       <nav>
         <h1>Opiskelija Ravintolat</h1>
-        <ul>
+        <button class="hamburger-menu">&#9776;</button>
+        <ul class="full-width">
           <li>
             <img
               id="customer-info"
@@ -30,15 +30,15 @@
     <main>
       <div class="container">
         <div class="left-side">
-            <h2>Suodata ravintoloita</h2>
-            <section class="filters"></section>
-            <select id="city-filter">
+          <h2>Suodata ravintoloita</h2>
+          <section class="filters">
+            <select class="filter" id="city-filter">
               <option value="">Valitse kaupunki</option>
             </select>
-            <select id="provider-filter">
+            <select class="filter" id="provider-filter">
               <option value="">Valitse Palveluntarjoaja</option>
             </select>
-            <button id="filter-button">Suodata</button>
+            <button class="filter-button">Suodata</button>
           </section>
           <section id="restaurants">
             <h2>Ravintolat</h2>
@@ -49,7 +49,9 @@
               </div>
               <div class="restaurant-actions">
                 <div class="restaurant-info">
-                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-address">
+                    Myllypurontie 53, 00810 Helsinki
+                  </p>
                   <p class="restaurant-provider">Sodexo</p>
                 </div>
                 <button class="menu-btn">Ruokalista</button>
@@ -62,7 +64,9 @@
               </div>
               <div class="restaurant-actions">
                 <div class="restaurant-info">
-                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-address">
+                    Myllypurontie 53, 00810 Helsinki
+                  </p>
                   <p class="restaurant-provider">Sodexo</p>
                 </div>
                 <button class="menu-btn">Ruokalista</button>
@@ -75,7 +79,9 @@
               </div>
               <div class="restaurant-actions">
                 <div class="restaurant-info">
-                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-address">
+                    Myllypurontie 53, 00810 Helsinki
+                  </p>
                   <p class="restaurant-provider">Sodexo</p>
                 </div>
                 <button class="menu-btn">Ruokalista</button>
@@ -88,7 +94,9 @@
               </div>
               <div class="restaurant-actions">
                 <div class="restaurant-info">
-                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-address">
+                    Myllypurontie 53, 00810 Helsinki
+                  </p>
                   <p class="restaurant-provider">Sodexo</p>
                 </div>
                 <button class="menu-btn">Ruokalista</button>
@@ -104,7 +112,10 @@
 
             <div class="daily-menu-card">
               <h3 class="menu-day">Maanantai</h3>
-              <h4 class="menu-name">Paahdettua kesäkurpitsaa, tomaatti-linssimuhennosta ja Ras elHanout -kikherneitä</h4>
+              <h4 class="menu-name">
+                Paahdettua kesäkurpitsaa, tomaatti-linssimuhennosta ja Ras
+                elHanout -kikherneitä
+              </h4>
               <p class="menu-price">2,95e / 9,80e</p>
               <p class="menu-diets">diets: L</p>
             </div>
