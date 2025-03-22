@@ -1,0 +1,35 @@
+/* Header */
+header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#login-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#login-btn:hover {
+  background-color: #2980b9;
+}
+
+#user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="styles.css" />
+    <title>Opiskelija Ravintolat</title>
+  </head>
+  <body>
+    <header class="header-default">
+      <nav>
+        <h1>Opiskelija Ravintolat</h1>
+        <ul>
+          <li>
+            <img
+              id="customer-info"
+              src="https://picsum.photos/seed/picsum/200/300"
+              alt="Customer avatar"
+            />
+          </li>
+          <li><button id="sign-in">Kirjaudu</button></li>
+          <li><button id="register">Rekisteröidy</button></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="container">
+        <div class="left-side">
+            <h2>Suodata ravintoloita</h2>
+            <section class="filters"></section>
+            <select id="city-filter">
+              <option value="">Valitse kaupunki</option>
+            </select>
+            <select id="provider-filter">
+              <option value="">Valitse Palveluntarjoaja</option>
+            </select>
+            <button id="filter-button">Suodata</button>
+          </section>
+          <section id="restaurants">
+            <h2>Ravintolat</h2>
+            <div class="restaurant-card">
+              <div class="restaurant-header">
+                <h3 class="restaurant-name">Ravintola 1</h3>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="restaurant-actions">
+                <div class="restaurant-info">
+                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-provider">Sodexo</p>
+                </div>
+                <button class="menu-btn">Ruokalista</button>
+              </div>
+            </div>
+            <div class="restaurant-card">
+              <div class="restaurant-header">
+                <h3 class="restaurant-name">Ravintola 2</h3>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="restaurant-actions">
+                <div class="restaurant-info">
+                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-provider">Sodexo</p>
+                </div>
+                <button class="menu-btn">Ruokalista</button>
+              </div>
+            </div>
+            <div class="restaurant-card">
+              <div class="restaurant-header">
+                <h3 class="restaurant-name">Ravintola 3</h3>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="restaurant-actions">
+                <div class="restaurant-info">
+                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-provider">Sodexo</p>
+                </div>
+                <button class="menu-btn">Ruokalista</button>
+              </div>
+            </div>
+            <div class="restaurant-card">
+              <div class="restaurant-header">
+                <h3 class="restaurant-name">Ravintola 4</h3>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="restaurant-actions">
+                <div class="restaurant-info">
+                  <p class="restaurant-address">Myllypurontie 53, 00810 Helsinki</p>
+                  <p class="restaurant-provider">Sodexo</p>
+                </div>
+                <button class="menu-btn">Ruokalista</button>
+              </div>
+            </div>
+          </section>
+          <section id="menu">
+            <div class="selection">
+              <h2>Ruokalista</h2>
+              <button class="daily-menu">Päivän lista</button>
+              <button class="weekly-menu">Viikon lista</button>
+            </div>
+
+            <div class="daily-menu-card">
+              <h3 class="menu-day">Maanantai</h3>
+              <h4 class="menu-name">Paahdettua kesäkurpitsaa, tomaatti-linssimuhennosta ja Ras elHanout -kikherneitä</h4>
+              <p class="menu-price">2,95e / 9,80e</p>
+              <p class="menu-diets">diets: L</p>
+            </div>
+          </section>
+        </div>
+        <div class="map">
+          <div id="map"></div>
+        </div>
+      </div>
+      <footer>
+        <p>Made by Samuel Sarimo</p>
+      </footer>
+    </main>
+  </body>
+</html>
