@@ -1,5 +1,12 @@
 'use strict';
 
+import {createRestaurantCard} from './lib/createRestaurantCard.js';
+import {getRestaurants} from './lib/getRestaurants.js';
+
+// Get restaurants
+const restaurants = await getRestaurants();
+console.log(restaurants);
+
 // HEADER
 window.addEventListener('scroll', function () {
   let header = document.querySelector('header');
@@ -38,6 +45,15 @@ function success(pos) {
     .addTo(map)
     .bindPopup('I am here.')
     .openPopup();
+
+  // Restaurants to map
+  for (let restaurant of restaurants) {
+    L.marker(restaurant.location.coordinates.reverse())
+      .addTo(map)
+      .bindPopup(
+        `<h3>${restaurant.name}</h3><p>${restaurant.address}, ${restaurant.city}</p>`
+      );
+  }
 }
 
 // Function to be called if an error occurs while retrieving location information
@@ -47,3 +63,15 @@ function error(err) {
 
 // Starts the location search
 navigator.geolocation.getCurrentPosition(success, error, options);
+
+// Restaurants to display
+
+for (let restaurant of restaurants) {
+  createRestaurantCard(
+    restaurant.name,
+    restaurant.address,
+    restaurant.postalCode,
+    restaurant.city,
+    restaurant.company
+  );
+}
