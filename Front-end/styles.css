@@ -157,6 +157,10 @@ main {
   width: 100%;
 }
 
+.hidden {
+  display: none;
+}
+
 .restaurant-name {
   font-size: 1.6rem;
   font-weight: bold;
@@ -186,6 +190,11 @@ main {
   margin-bottom: 10px;
 }
 
+.selected {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
 .daily-menu-card {
   background-color: white;
   border-radius: 10px;
@@ -203,6 +212,14 @@ p {
   font-family: 'MyFont2';
   margin-top: 0;
   margin-bottom: 5px;
+}
+
+.individual-course {
+  margin-bottom: 30px;
+}
+
+.individual-course h4 {
+  margin-bottom: 20px;
 }
 
 footer {

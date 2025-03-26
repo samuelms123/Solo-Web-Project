@@ -32,6 +32,8 @@
   },
 */
 
+import {getMenu} from './getMenu.js';
+
 export function createRestaurantCard(
   name,
   address,
