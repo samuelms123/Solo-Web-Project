@@ -1,3 +1,15 @@
+export function scrollToMenu() {
+  const target = document.querySelector('#menu');
+  const offset = 100;
+
+  const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+
+  window.scrollTo({
+    top: targetPosition - offset,
+    behavior: 'smooth',
+  });
+}
+
 /**
  *
  * @param {number[]} start geoJSON point 1

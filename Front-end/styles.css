@@ -198,13 +198,17 @@ main {
 .daily-menu-card {
   background-color: white;
   border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 10px 20px 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   max-width: 40%;
   transition: transform 0.3s ease;
+}
+
+.daily-menu-card h3 {
+  margin-bottom: 40px;
+  margin-top: 20px;
 }
 
 .daily-menu-card h4,
@@ -220,6 +224,15 @@ p {
 
 .individual-course h4 {
   margin-bottom: 20px;
+}
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #7c7c7c;
+  margin: 1em 0;
+  padding: 0;
 }
 
 footer {
