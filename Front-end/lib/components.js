@@ -21,15 +21,23 @@ export function initRestaurants(restaurants) {
   }
 }
 
-export function displayDailyMenu(dailyMenu) {
+function displayMenuNotFound(restaurantName) {
   const dailyMenuCard = document.querySelector('.daily-menu-card');
-  const selectRestaurantPrompt = document.querySelector(
-    '#select-restaurant-prompt'
-  );
+  dailyMenuCard.innerHTML = '';
 
-  if (dailyMenu) {
-    selectRestaurantPrompt.classList.add('hidden');
-  }
+  const notFoundElem = document.createElement('h3');
+  notFoundElem.innerText = `Ravintola ${restaurantName} lista ei saatavilla.`;
+  dailyMenuCard.append(notFoundElem);
+}
+
+function displayDailyMenu(restaurantName, dailyMenu) {
+  const dailyMenuCard = document.querySelector('.daily-menu-card');
+
+  dailyMenuCard.innerHTML = '';
+
+  const restoNameElem = document.createElement('h3');
+  restoNameElem.innerText = restaurantName;
+  dailyMenuCard.append(restoNameElem);
 
   for (let item of dailyMenu.courses) {
     const food = document.createElement('div');
@@ -51,16 +59,7 @@ export function displayDailyMenu(dailyMenu) {
   }
 }
 
-export function createRestaurantCard(
-  name,
-  address,
-  postalCode,
-  city,
-  provider,
-  id
-) {
-  // HTMl section for restaurants
-
+function createRestaurantCard(name, address, postalCode, city, provider, id) {
   // Card
   const restaurantCard = document.createElement('div');
   restaurantCard.classList.add('restaurant-card');
@@ -108,12 +107,11 @@ export function createRestaurantCard(
     const menu = await getMenu(menuType.value, id);
     console.log(menu);
     if (menu.courses.length > 0) {
-      displayDailyMenu(menu);
+      displayDailyMenu(name, menu);
       scrollToMenu();
     } else {
       console.log('no menu found!');
-      const menuNotFoundText = document.querySelector('#menu-not-found');
-      menuNotFoundText.classList.remove('hidden');
+      displayMenuNotFound(name);
       scrollToMenu();
     }
   });
