@@ -151,4 +151,16 @@ export function initUiEventListeners() {
       console.log('Daily selected');
     }
   });
+
+  const signInBtn = document.querySelector('#sign-in');
+  const signInModal = document.querySelector('#sign-in-modal');
+  signInBtn.addEventListener('click', () => {
+    signInModal.showModal();
+  });
+
+  const registerBtn = document.querySelector('#register');
+  const registerModal = document.querySelector('#register-modal');
+  registerBtn.addEventListener('click', () => {
+    registerModal.showModal();
+  });
 }

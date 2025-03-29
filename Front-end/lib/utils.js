@@ -1,3 +1,4 @@
+// Scroll to the bottom menu section
 export function scrollToMenu() {
   const target = document.querySelector('#menu');
   const offset = 100;
