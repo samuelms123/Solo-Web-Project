@@ -1,6 +1,7 @@
 'use strict';
 
 import {getMenu} from './api.js';
+import {moveMapTo} from './map.js';
 import {scrollToMenu} from './utils.js';
 import {dailyBtn, weeklyBtn, menuType} from './variables.js';
 
@@ -20,7 +21,8 @@ export function initRestaurants(restaurants) {
         restaurant.postalCode,
         restaurant.city,
         restaurant.company,
-        restaurant._id
+        restaurant._id,
+        restaurant.location.coordinates
       )
     );
   }
@@ -102,13 +104,21 @@ function displayDailyMenu(restaurantName, dailyMenu) {
   }
 }
 
-function createRestaurantCard(name, address, postalCode, city, provider, id) {
+function createRestaurantCard(
+  name,
+  address,
+  postalCode,
+  city,
+  provider,
+  id,
+  coordinates
+) {
   // Card
   const restaurantCard = document.createElement('div');
   restaurantCard.classList.add('restaurant-card');
 
   restaurantCard.addEventListener('click', function () {
-    // add event to move map to restaurant location
+    moveMapTo(coordinates);
   });
 
   // Card-header

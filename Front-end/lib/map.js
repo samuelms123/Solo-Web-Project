@@ -1,3 +1,5 @@
+let map;
+
 const restaurantIcon = L.icon({
   iconUrl: 'assets/restaurant-icon.png',
   iconSize: [30, 30],
@@ -27,7 +29,7 @@ function success(pos, restaurants) {
   console.log(`More or less ${crd.accuracy} meters.`);
 
   // Use the leaflet.js library to show the location on the map (https://leafletjs.com/)
-  const map = L.map('map').setView([crd.latitude, crd.longitude], 13);
+  map = L.map('map').setView([crd.latitude, crd.longitude], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -50,4 +52,11 @@ function success(pos, restaurants) {
 
 function error(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+export function moveMapTo(coordinates, zoom = 15) {
+  map.flyTo(coordinates, zoom, {
+    duration: 1.5,
+    easeLinearity: 0.25,
+  });
 }
