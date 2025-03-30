@@ -4,7 +4,12 @@ import {getMenu} from './api.js';
 import {scrollToMenu} from './utils.js';
 import {dailyBtn, weeklyBtn, menuType} from './variables.js';
 
+let currentRestaurantName;
+let currentWeeklyMenu;
+let currentDailyMenu;
+
 const restaurantSection = document.querySelector('#restaurants');
+const menuCard = document.querySelector('.menu-card');
 
 export function initRestaurants(restaurants) {
   for (let restaurant of restaurants) {
@@ -22,28 +27,65 @@ export function initRestaurants(restaurants) {
 }
 
 function displayMenuNotFound(restaurantName) {
-  const dailyMenuCard = document.querySelector('.daily-menu-card');
-  dailyMenuCard.innerHTML = '';
+  menuCard.innerHTML = '';
 
   const notFoundElem = document.createElement('h3');
   notFoundElem.innerText = `Ravintola ${restaurantName} lista ei saatavilla.`;
-  dailyMenuCard.append(notFoundElem);
+  menuCard.append(notFoundElem);
 }
 
-function displayDailyMenu(restaurantName, dailyMenu) {
-  const dailyMenuCard = document.querySelector('.daily-menu-card');
-
-  dailyMenuCard.innerHTML = '';
+function displayWeeklyMenu(restaurantName, weeklyMenu) {
+  menuCard.innerHTML = '';
 
   const restoNameElem = document.createElement('h3');
   restoNameElem.innerText = restaurantName;
-  dailyMenuCard.append(restoNameElem);
+  menuCard.append(restoNameElem);
+
+  for (let day of weeklyMenu.days) {
+    const dayElem = document.createElement('h4');
+    dayElem.classList.add('menu-day');
+
+    dayElem.innerText = day.date;
+    const daySeparator = document.createElement('hr');
+    daySeparator.classList.add('day-separator');
+
+    menuCard.append(daySeparator, dayElem);
+
+    for (let course of day.courses) {
+      // refactor this to function
+      const food = document.createElement('div');
+      food.classList.add('individual-course');
+
+      const courseName = document.createElement('h5');
+      courseName.innerText = course.name;
+
+      const coursePrice = document.createElement('p');
+      coursePrice.innerText = course.price;
+
+      const courseDiets = document.createElement('p');
+      courseDiets.innerText = course.diets;
+
+      const courseSeparator = document.createElement('hr');
+      courseSeparator.classList.add('course-separator');
+
+      food.append(courseName, coursePrice, courseDiets);
+      menuCard.append(food);
+    }
+  }
+}
+
+function displayDailyMenu(restaurantName, dailyMenu) {
+  menuCard.innerHTML = '';
+
+  const restoNameElem = document.createElement('h3');
+  restoNameElem.innerText = restaurantName;
+  menuCard.append(restoNameElem);
 
   for (let item of dailyMenu.courses) {
     const food = document.createElement('div');
     food.classList.add('individual-course');
 
-    const course = document.createElement('h4');
+    const course = document.createElement('h5');
     course.innerText = item.name;
 
     const price = document.createElement('p');
@@ -53,9 +95,10 @@ function displayDailyMenu(restaurantName, dailyMenu) {
     diets.innerText = item.diets;
 
     const separator = document.createElement('hr');
+    separator.classList.add('course-separator');
 
     food.append(course, price, diets, separator);
-    dailyMenuCard.append(food);
+    menuCard.append(food);
   }
 }
 
@@ -105,14 +148,33 @@ function createRestaurantCard(name, address, postalCode, city, provider, id) {
   menuBtn.innerText = 'Ruokalista';
   menuBtn.addEventListener('click', async function () {
     const menu = await getMenu(menuType.value, id);
+    currentRestaurantName = name;
     console.log(menu);
-    if (menu.courses.length > 0) {
-      displayDailyMenu(name, menu);
-      scrollToMenu();
+    if (menuType.value === 'daily') {
+      currentDailyMenu = menu;
+      if (menu.courses.length > 0) {
+        displayDailyMenu(name, menu);
+        scrollToMenu();
+        // get weekly menu in advance
+        currentWeeklyMenu = await getMenu('weekly', id);
+      } else {
+        console.log('no menu found!');
+        displayMenuNotFound(name);
+        scrollToMenu();
+      }
     } else {
-      console.log('no menu found!');
-      displayMenuNotFound(name);
-      scrollToMenu();
+      currentWeeklyMenu = menu;
+      if (menu.days.length > 0) {
+        displayWeeklyMenu(name, menu);
+        console.log('Displaying weekly menu!');
+        scrollToMenu();
+        // get daily menu in advance
+        currentDailyMenu = await getMenu('daily', id);
+      } else {
+        console.log('no menu found!');
+        displayMenuNotFound(name);
+        scrollToMenu();
+      }
     }
   });
 
@@ -133,13 +195,16 @@ export function initUiEventListeners() {
     }
   });
 
-  // WEEKLY / DAILY BTNS
+  // WEEKLY / DAILY BUTTONS
   weeklyBtn.addEventListener('click', () => {
     if (!weeklyBtn.classList.contains('selected')) {
       weeklyBtn.classList.add('selected');
       dailyBtn.classList.remove('selected');
       menuType.value = 'weekly';
       console.log('Weekly selected');
+      if (currentRestaurantName && currentWeeklyMenu) {
+        displayWeeklyMenu(currentRestaurantName, currentWeeklyMenu);
+      }
     }
   });
 
@@ -149,6 +214,9 @@ export function initUiEventListeners() {
       weeklyBtn.classList.remove('selected');
       menuType.value = 'daily';
       console.log('Daily selected');
+      if (currentRestaurantName && currentDailyMenu) {
+        displayDailyMenu(currentRestaurantName, currentDailyMenu);
+      }
     }
   });
 

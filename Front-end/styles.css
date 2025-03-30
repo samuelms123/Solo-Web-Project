@@ -50,7 +50,7 @@ h1 {
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-top: 3rem;
 }
 
@@ -197,7 +197,7 @@ main {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.daily-menu-card {
+.menu-card {
   background-color: white;
   border-radius: 10px;
   padding: 10px 20px 10px;
@@ -208,14 +208,21 @@ main {
   transition: transform 0.3s ease;
 }
 
-.daily-menu-card h3 {
+.menu-card h3 {
+  font-size: 2rem;
   margin-bottom: 40px;
   margin-top: 20px;
 }
 
-.daily-menu-card h4,
+.menu-card h4 {
+  font-size: 1rem;
+  margin-bottom: 38px;
+}
+
+.menu-card h5,
 p {
   font-family: 'MyFont2';
+  font-size: 1rem;
   margin-top: 0;
   margin-bottom: 5px;
 }
@@ -228,7 +235,17 @@ p {
   margin-bottom: 20px;
 }
 
-hr {
+.course-separator {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #7c7c7c;
+  margin: 1em 0;
+  margin-top: 39px;
+  padding: 0;
+}
+
+.day-separator {
   display: block;
   height: 1px;
   border: 0;
@@ -311,7 +328,7 @@ footer {
     margin: 10px auto;
   }
 
-  .daily-menu-card {
+  .menu-card {
     max-width: 90% !important;
     margin: 10px auto;
   }
@@ -345,7 +362,7 @@ footer {
     margin-bottom: 10px;
   }
 
-  .daily-menu-card {
+  .menu-card {
     max-width: 100vw !important;
     margin: auto;
   }
