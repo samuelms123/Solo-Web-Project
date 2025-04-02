@@ -23,3 +23,5 @@ export function distance(start, finish) {
     Math.pow(finish[0] - start[0], 2) + Math.pow(finish[1] - start[1], 2)
   );
 }
+
+export function sortArray() {}

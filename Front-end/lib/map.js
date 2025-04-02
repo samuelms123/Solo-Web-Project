@@ -21,6 +21,8 @@ export function initMap(restaurants) {
 
 function success(pos, restaurants) {
   const crd = pos.coords;
+  console.log('coordinates', crd);
+  //crd.latitude, crd.longitude omiin koordinaatteihin
 
   // Printing location information to the console
   console.log('Your current position is:');

@@ -1,6 +1,7 @@
 'use strict';
 
-import {getMenu} from './api.js';
+import {getMenu} from '../api/restaurant.js';
+import {checkUsernameAvailability, createUser} from '../api/user.js';
 import {moveMapTo} from './map.js';
 import {scrollToMenu} from './utils.js';
 import {dailyBtn, weeklyBtn, menuType} from './variables.js';
@@ -240,5 +241,40 @@ export function initUiEventListeners() {
   const registerModal = document.querySelector('#register-modal');
   registerBtn.addEventListener('click', () => {
     registerModal.showModal();
+  });
+
+  const registerUserForm = document.querySelector('#register-user');
+  const usernameElem = document.querySelector('#new-username');
+  const passwordElem = document.querySelector('#new-password');
+  const emailElem = document.querySelector('#email');
+  const userTakenElem = document.querySelector('#user-taken');
+
+  registerUserForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const username = usernameElem.value;
+    const password = passwordElem.value;
+    const email = emailElem.value;
+
+    const checkUsername = await checkUsernameAvailability(username);
+
+    if (checkUsername.available) {
+      console.log('käyttäjä vapaa!');
+      const result = await createUser(username, password, email);
+      if (result == null) {
+        userTakenElem.innerText = 'Sähköposti varattu!';
+        emailElem.value = '';
+        return;
+      } else {
+        userTakenElem.innerText = 'Rekisteröinti onnistui!';
+        usernameElem.value = '';
+        emailElem.value = '';
+        passwordElem.value = '';
+      }
+    } else {
+      console.log('käyttäjä varattu!');
+      userTakenElem.innerText = 'Käyttäjätunnus varattu!';
+      usernameElem.value = '';
+      return;
+    }
   });
 }

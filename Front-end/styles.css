@@ -270,6 +270,10 @@ p {
   margin-bottom: 50px;
 }
 
+#user-taken {
+  margin-bottom: 10px;
+}
+
 .modal input {
   width: 100%;
   padding: 10px;

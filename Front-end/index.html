@@ -35,7 +35,7 @@
     <main>
       <dialog id="sign-in-modal" class="modal">
         <h2>Kirjaudu sisään</h2>
-        <form>
+        <form id="sign-in-user">
           <input id="username" type="text" placeholder="Käyttäjätunnus" />
           <input id="password" type="text" placeholder="Salasana" />
           <button type="submit">Kirjaudu</button>
@@ -43,14 +43,11 @@
       </dialog>
       <dialog id="register-modal" class="modal">
         <h2>Rekisteröidy</h2>
-        <form>
+        <p id="user-taken"></p>
+        <form id="register-user">
           <input id="new-username" type="text" placeholder="Käyttäjätunnus" />
           <input id="new-password" type="text" placeholder="Salasana" />
           <input id="email" type="email" placeholder="Sähköposti" />
-          <div class="profile-picture">
-            <label for="avatar">Valitse profiilikuva</label>
-            <input id="avatar" name="avatar" type="file" />
-          </div>
           <button type="submit">Rekisteröidy</button>
         </form>
       </dialog>
