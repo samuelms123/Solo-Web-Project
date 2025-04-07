@@ -29,6 +29,12 @@ function success(pos, restaurants) {
   console.log(`Latitude : ${crd.latitude}`);
   console.log(`Longitude: ${crd.longitude}`);
   console.log(`More or less ${crd.accuracy} meters.`);
+  const userPosition = {
+    latitude: pos.coords.latitude,
+    longitude: pos.coords.longitude,
+  };
+
+  //localStorage.setItem('coords', JSON.stringify(userPosition));
 
   // Use the leaflet.js library to show the location on the map (https://leafletjs.com/)
   map = L.map('map').setView([crd.latitude, crd.longitude], 13);

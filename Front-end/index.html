@@ -19,11 +19,7 @@
         <button class="hamburger-menu">&#9776;</button>
         <ul class="full-width">
           <li>
-            <img
-              id="default-picture"
-              src="https://picsum.photos/seed/picsum/200/300"
-              alt="Customer avatar"
-            />
+            <button id="user-info" class="hidden">Omat tiedot</button>
           </li>
           <li><button id="sign-in">Kirjaudu</button></li>
           <li>
@@ -33,6 +29,34 @@
       </nav>
     </header>
     <main>
+      <dialog id="userdata-modal" class="modal">
+        <h2>Käyttäjätiedot</h2>
+        <form id="userdata">
+          <input
+            id="info-username"
+            type="text"
+            placeholder="samuelms123"
+            disabled
+          />
+          <input
+            id="info-email"
+            type="text"
+            placeholder="samuelms123@metropolia.fi"
+            disabled
+          />
+          <input
+            id="info-restaurant"
+            type="text"
+            placeholder="Sodexo Myllypuro"
+            disabled
+          />
+          <img
+            id="info-avatar"
+            src="https://picsum.photos/seed/picsum/200/300"
+          />
+        </form>
+        <button id="edit-info">Muokkaa</button>
+      </dialog>
       <dialog id="sign-in-modal" class="modal">
         <h2>Kirjaudu sisään</h2>
         <p id="message" class="message-output"></p>
@@ -58,11 +82,39 @@
             <h2>Suodata ravintoloita</h2>
             <select class="filter" id="city-filter">
               <option value="">Valitse kaupunki</option>
+              <option value="helsinki">Helsinki</option>
+              <option value="hameenlinna">Hämeenlinna</option>
+              <option value="tampere">Tampere</option>
+              <option value="seinajoki">Seinäjoki</option>
+              <option value="kokkola">Kokkola</option>
+              <option value="turku">Turku</option>
+              <option value="valkeakoski">Valkeakoski</option>
+              <option value="vantaa">Vantaa</option>
+              <option value="ikaalinen">Ikaalinen</option>
+              <option value="espoo">Espoo</option>
+              <option value="joensuu">Joensuu</option>
+              <option value="kuopio">Kuopio</option>
+              <option value="rovaniemi">Rovaniemi</option>
+              <option value="pori">Pori</option>
+              <option value="oulu">Oulu</option>
+              <option value="liminka">Liminka</option>
+              <option value="ylivieska">Ylivieska</option>
+              <option value="vaasa">Vaasa</option>
+              <option value="jarvenpaa">Järvenpää</option>
+              <option value="jyvaskyla">Jyväskylä</option>
+              <option value="kemi">Kemi</option>
+              <option value="hyvinkaa">Hyvinkää</option>
+              <option value="riihimaki">Riihimäki</option>
+              <option value="rauma">Rauma</option>
+              <option value="lappeenranta">Lappeenranta</option>
+              <option value="kouvola">Kouvola</option>
             </select>
             <select class="filter" id="provider-filter">
               <option value="">Valitse Palveluntarjoaja</option>
+              <option value="Sodexo">Sodexo</option>
+              <option value="Compass Group">Compass Group</option>
             </select>
-            <button>Suodata</button>
+            <button id="filter-button">Suodata</button>
           </section>
           <section id="restaurants">
             <h2>Ravintolat</h2>

@@ -124,13 +124,6 @@ button:hover {
   padding: 10px;
 }
 
-#default-picture {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin: 10px;
-}
-
 main {
   padding: 10px 5%;
   margin: 0 auto;
@@ -264,6 +257,13 @@ p {
   padding-right: 50px;
 }
 
+#info-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 10px;
+}
+
 .modal h2 {
   padding: 0;
   margin: 0;
@@ -287,10 +287,6 @@ p {
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
-}
-
-#avatar {
-  display: none;
 }
 
 .modal label {

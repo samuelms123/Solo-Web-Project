@@ -2,10 +2,14 @@
 
 import {login} from '../api/auth.js';
 import {getMenu} from '../api/restaurant.js';
-import {checkUsernameAvailability, createUser} from '../api/user.js';
+import {
+  checkUsernameAvailability,
+  createUser,
+  getUserInfo,
+} from '../api/user.js';
 import {moveMapTo} from './map.js';
 import {scrollToMenu} from './utils.js';
-import {dailyBtn, weeklyBtn, menuType} from './variables.js';
+import {dailyBtn, weeklyBtn, menuType, loggedIn} from './variables.js';
 
 let currentRestaurantName;
 let currentWeeklyMenu;
@@ -197,6 +201,25 @@ function createRestaurantCard(
   return restaurantCard;
 }
 
+async function changeToLoggedIn() {
+  // kirjaudu sisään - kirjaudu ulos
+  // omat tiedot nappi
+  loggedIn.value = true;
+  const signInBtn = document.querySelector('#sign-in');
+  const UserInfoBtn = document.querySelector('#user-info');
+  UserInfoBtn.classList.remove('hidden');
+  signInBtn.innerText = 'Kirjaudu ulos';
+  const userInfo = await getUserInfo(localStorage.getItem('authToken'));
+  localStorage.setItem('userData', JSON.stringify(userInfo));
+
+  UserInfoBtn.addEventListener('click', () => {
+    // modal auki
+    const userDataModal = document.querySelector('#userdata-modal');
+    userDataModal.showModal();
+    console.log(localStorage.getItem('userData'));
+  });
+}
+
 export function initUiEventListeners() {
   window.addEventListener('scroll', () => {
     let header = document.querySelector('header');
@@ -235,7 +258,13 @@ export function initUiEventListeners() {
   const signInBtn = document.querySelector('#sign-in');
   const signInModal = document.querySelector('#sign-in-modal');
   signInBtn.addEventListener('click', () => {
-    signInModal.showModal();
+    if (!loggedIn.value) {
+      signInModal.showModal();
+    } else {
+      //kirjaudu ulos
+      localStorage.clear();
+      location.reload();
+    }
   });
 
   const registerBtn = document.querySelector('#register');
@@ -260,6 +289,7 @@ export function initUiEventListeners() {
     if (result != null) {
       localStorage.setItem('authToken', result.token);
       inputMessageElem.innerText = `Tervetuloa, ${result.data.username}`;
+      changeToLoggedIn();
     } else {
       inputMessageElem.innerText = 'Väärä käyttäjätunnus/salasana';
       SignInPasswordElem.value = '';

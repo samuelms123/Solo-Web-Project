@@ -55,3 +55,27 @@ export async function checkUsernameAvailability(username) {
     console.log(error, ' Error happened while fetching restaurant data.');
   }
 }
+
+export async function getUserInfo(token) {
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  try {
+    const response = await fetch(
+      `https://media2.edu.metropolia.fi/restaurant//api/v1/users/token`,
+      options
+    );
+    if (!response.ok) {
+      throw new Error('Invalid input!');
+    }
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.log(error, ' Error happened while fetching menu data.');
+    return null;
+  }
+}

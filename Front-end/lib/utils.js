@@ -18,7 +18,7 @@ export function scrollToMenu() {
  * @returns distance between point 1 - 2
  */
 
-export function distance(start, finish) {
+export function calculateDistance(start, finish) {
   return Math.sqrt(
     Math.pow(finish[0] - start[0], 2) + Math.pow(finish[1] - start[1], 2)
   );
