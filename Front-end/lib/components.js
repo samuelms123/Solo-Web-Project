@@ -1,5 +1,6 @@
 'use strict';
 
+import {login} from '../api/auth.js';
 import {getMenu} from '../api/restaurant.js';
 import {checkUsernameAvailability, createUser} from '../api/user.js';
 import {moveMapTo} from './map.js';
@@ -241,6 +242,28 @@ export function initUiEventListeners() {
   const registerModal = document.querySelector('#register-modal');
   registerBtn.addEventListener('click', () => {
     registerModal.showModal();
+  });
+
+  const signInUserForm = document.querySelector('#sign-in-user');
+  const signInUsernameElem = document.querySelector('#username');
+  const SignInPasswordElem = document.querySelector('#password');
+  const inputMessageElem = document.querySelector('#message');
+
+  signInUserForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const username = signInUsernameElem.value;
+    const password = SignInPasswordElem.value;
+
+    const result = await login(username, password);
+    console.log('result', result);
+
+    if (result != null) {
+      localStorage.setItem('authToken', result.token);
+      inputMessageElem.innerText = `Tervetuloa, ${result.data.username}`;
+    } else {
+      inputMessageElem.innerText = 'Väärä käyttäjätunnus/salasana';
+      SignInPasswordElem.value = '';
+    }
   });
 
   const registerUserForm = document.querySelector('#register-user');

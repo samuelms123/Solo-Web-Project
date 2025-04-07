@@ -27,6 +27,7 @@ export async function login(username, password) {
     console.log(json);
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while creating user.');
+    console.log(error, ' Error happened while logging in.');
+    return null;
   }
 }
