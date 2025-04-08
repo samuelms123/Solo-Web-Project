@@ -1,12 +1,8 @@
 'use strict';
 
 import {login} from '../api/auth.js';
-import {getMenu} from '../api/restaurant.js';
-import {
-  checkUsernameAvailability,
-  createUser,
-  getUserInfo,
-} from '../api/user.js';
+import {getMenu, getRestaurantById} from '../api/restaurant.js';
+import {checkUsernameAvailability, createUser} from '../api/user.js';
 import {moveMapTo} from './map.js';
 import {scrollToMenu} from './utils.js';
 import {dailyBtn, weeklyBtn, menuType, loggedIn} from './variables.js';
@@ -201,16 +197,53 @@ function createRestaurantCard(
   return restaurantCard;
 }
 
-async function changeToLoggedIn() {
-  // kirjaudu sisään - kirjaudu ulos
-  // omat tiedot nappi
+function setInfo(info, restaurantInfo) {
+  const username = document.querySelector('#info-username');
+  const email = document.querySelector('#info-email');
+  const favRestaurant = document.querySelector('#info-restaurant');
+
+  username.placeholder = info.username;
+  email.placeholder = info.email;
+
+  if (restaurantInfo) {
+    favRestaurant.placeholder = restaurantInfo.name;
+  }
+}
+
+async function changeToLoggedIn(info) {
   loggedIn.value = true;
   const signInBtn = document.querySelector('#sign-in');
   const UserInfoBtn = document.querySelector('#user-info');
   UserInfoBtn.classList.remove('hidden');
   signInBtn.innerText = 'Kirjaudu ulos';
-  const userInfo = await getUserInfo(localStorage.getItem('authToken'));
-  localStorage.setItem('userData', JSON.stringify(userInfo));
+  localStorage.setItem('userData', info);
+  let restaurantInfo;
+  if (info.favouriteRestaurant) {
+    const favouriteRestaurantSection = document.querySelector(
+      '#favourite-restaurant'
+    );
+    favouriteRestaurantSection.classList.remove('hidden');
+    console.log('favouriteRESTAURANT!', info.favouriteRestaurant);
+
+    restaurantInfo = await getRestaurantById(info.favouriteRestaurant);
+    console.log('restaurantINFOcoords', restaurantInfo.location.coordinates);
+    const coordinates = [
+      restaurantInfo.location.coordinates[1],
+      restaurantInfo.location.coordinates[0],
+    ];
+
+    const restaurantCard = createRestaurantCard(
+      restaurantInfo.name,
+      restaurantInfo.address,
+      restaurantInfo.postalCode,
+      restaurantInfo.city,
+      restaurantInfo.company,
+      restaurantInfo._id,
+      coordinates
+    );
+
+    favouriteRestaurantSection.appendChild(restaurantCard);
+  }
 
   UserInfoBtn.addEventListener('click', () => {
     // modal auki
@@ -218,6 +251,7 @@ async function changeToLoggedIn() {
     userDataModal.showModal();
     console.log(localStorage.getItem('userData'));
   });
+  setInfo(info, restaurantInfo); // set userinfo to 'omat tiedot'
 }
 
 export function initUiEventListeners() {
@@ -278,18 +312,19 @@ export function initUiEventListeners() {
   const SignInPasswordElem = document.querySelector('#password');
   const inputMessageElem = document.querySelector('#message');
 
+  // LOGIN
   signInUserForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const username = signInUsernameElem.value;
     const password = SignInPasswordElem.value;
 
     const result = await login(username, password);
-    console.log('result', result);
+    console.log('result', result.data);
 
     if (result != null) {
       localStorage.setItem('authToken', result.token);
       inputMessageElem.innerText = `Tervetuloa, ${result.data.username}`;
-      changeToLoggedIn();
+      changeToLoggedIn(result.data);
     } else {
       inputMessageElem.innerText = 'Väärä käyttäjätunnus/salasana';
       SignInPasswordElem.value = '';

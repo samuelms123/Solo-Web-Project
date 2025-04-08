@@ -32,28 +32,18 @@
       <dialog id="userdata-modal" class="modal">
         <h2>Käyttäjätiedot</h2>
         <form id="userdata">
-          <input
-            id="info-username"
-            type="text"
-            placeholder="samuelms123"
-            disabled
-          />
-          <input
-            id="info-email"
-            type="text"
-            placeholder="samuelms123@metropolia.fi"
-            disabled
-          />
+          <input id="info-username" type="text" disabled />
+          <input id="info-email" type="text" disabled />
           <input
             id="info-restaurant"
             type="text"
-            placeholder="Sodexo Myllypuro"
+            placeholder="Ei suosikki ravintolaa!"
             disabled
           />
-          <img
+          <!-- <img
             id="info-avatar"
             src="https://picsum.photos/seed/picsum/200/300"
-          />
+          /> -->
         </form>
         <button id="edit-info">Muokkaa</button>
       </dialog>
@@ -62,7 +52,7 @@
         <p id="message" class="message-output"></p>
         <form id="sign-in-user">
           <input id="username" type="text" placeholder="Käyttäjätunnus" />
-          <input id="password" type="text" placeholder="Salasana" />
+          <input id="password" type="password" placeholder="Salasana" />
           <button type="submit">Kirjaudu</button>
         </form>
       </dialog>
@@ -71,13 +61,17 @@
         <p id="user-taken" class="message-output"></p>
         <form id="register-user">
           <input id="new-username" type="text" placeholder="Käyttäjätunnus" />
-          <input id="new-password" type="text" placeholder="Salasana" />
+          <input id="new-password" type="password" placeholder="Salasana" />
           <input id="email" type="email" placeholder="Sähköposti" />
           <button type="submit">Rekisteröidy</button>
         </form>
       </dialog>
       <div class="container">
         <div class="left-side">
+          <!-- class='restaurant-card to favourite restaurant sec -->
+          <section id="favourite-restaurant" class="hidden">
+            <h2>Suosikki ravintola</h2>
+          </section>
           <section class="filters">
             <h2>Suodata ravintoloita</h2>
             <select class="filter" id="city-filter">
