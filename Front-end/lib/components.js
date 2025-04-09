@@ -4,7 +4,7 @@ import {login} from '../api/auth.js';
 import {getMenu, getRestaurantById} from '../api/restaurant.js';
 import {checkUsernameAvailability, createUser} from '../api/user.js';
 import {moveMapTo} from './map.js';
-import {scrollToMenu} from './utils.js';
+import {calculateDistance, scrollToMenu} from './utils.js';
 import {dailyBtn, weeklyBtn, menuType, loggedIn} from './variables.js';
 
 let currentRestaurantName;
@@ -24,7 +24,8 @@ export function initRestaurants(restaurants) {
         restaurant.city,
         restaurant.company,
         restaurant._id,
-        restaurant.location.coordinates
+        restaurant.location.coordinates,
+        restaurant.distanceFromUser
       )
     );
   }
@@ -113,7 +114,8 @@ function createRestaurantCard(
   city,
   provider,
   id,
-  coordinates
+  coordinates,
+  distanceFromUser
 ) {
   // Card
   const restaurantCard = document.createElement('div');
@@ -152,7 +154,10 @@ function createRestaurantCard(
   restaurantProvider.classList.add('restaurant-provider');
   restaurantProvider.innerText = provider;
 
-  restaurantInfo.append(restaurantAddress, restaurantProvider);
+  const distance = document.createElement('p');
+  distance.innerText = `${distanceFromUser} km`;
+
+  restaurantInfo.append(restaurantAddress, restaurantProvider, distance);
 
   // MENU BUTTON
   const menuBtn = document.createElement('button');
@@ -227,10 +232,15 @@ async function changeToLoggedIn(info) {
 
     restaurantInfo = await getRestaurantById(info.favouriteRestaurant);
     console.log('restaurantINFOcoords', restaurantInfo.location.coordinates);
-    const coordinates = [
+    const coordinatesFlipped = [
       restaurantInfo.location.coordinates[1],
       restaurantInfo.location.coordinates[0],
     ];
+
+    const distance = calculateDistance(
+      JSON.parse(localStorage.getItem('user-coordinates')),
+      restaurantInfo.location.coordinates
+    ).toFixed(0);
 
     const restaurantCard = createRestaurantCard(
       restaurantInfo.name,
@@ -239,7 +249,8 @@ async function changeToLoggedIn(info) {
       restaurantInfo.city,
       restaurantInfo.company,
       restaurantInfo._id,
-      coordinates
+      coordinatesFlipped,
+      distance
     );
 
     favouriteRestaurantSection.appendChild(restaurantCard);
