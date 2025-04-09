@@ -20,7 +20,7 @@ export function scrollToMenu() {
 
 export function calculateDistance(start, finish) {
   return (
-    105 *
+    111 *
     Math.sqrt(
       Math.pow(finish[0] - start[0], 2) + Math.pow(finish[1] - start[1], 2)
     )

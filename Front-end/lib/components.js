@@ -65,7 +65,9 @@ function displayWeeklyMenu(restaurantName, weeklyMenu) {
       courseName.innerText = course.name;
 
       const coursePrice = document.createElement('p');
-      coursePrice.innerText = course.price;
+      course.price
+        ? (coursePrice.innerText = course.price)
+        : (coursePrice.innerText = 'hinta ei saatavilla');
 
       const courseDiets = document.createElement('p');
       courseDiets.innerText = course.diets;
@@ -94,7 +96,9 @@ function displayDailyMenu(restaurantName, dailyMenu) {
     course.innerText = item.name;
 
     const price = document.createElement('p');
-    price.innerText = item.price;
+    item.price
+      ? (price.innerText = item.price)
+      : (price.innerText = 'hinta ei saatavilla');
 
     const diets = document.createElement('p');
     diets.innerText = item.diets;
