@@ -3,6 +3,7 @@
 import {login} from '../api/auth.js';
 import {getMenu, getRestaurantById} from '../api/restaurant.js';
 import {checkUsernameAvailability, createUser} from '../api/user.js';
+import {filterRestaurants} from './filter.js';
 import {moveMapTo} from './map.js';
 import {calculateDistance, scrollToMenu} from './utils.js';
 import {dailyBtn, weeklyBtn, menuType, loggedIn} from './variables.js';
@@ -124,9 +125,10 @@ function createRestaurantCard(
   // Card
   const restaurantCard = document.createElement('div');
   restaurantCard.classList.add('restaurant-card');
+  const coordinatesFlipped = [coordinates[1], coordinates[0]];
 
   restaurantCard.addEventListener('click', function () {
-    moveMapTo(coordinates);
+    moveMapTo(coordinatesFlipped);
   });
 
   // Card-header
@@ -236,10 +238,6 @@ async function changeToLoggedIn(info) {
 
     restaurantInfo = await getRestaurantById(info.favouriteRestaurant);
     console.log('restaurantINFOcoords', restaurantInfo.location.coordinates);
-    const coordinatesFlipped = [
-      restaurantInfo.location.coordinates[1],
-      restaurantInfo.location.coordinates[0],
-    ];
 
     const distance = calculateDistance(
       JSON.parse(localStorage.getItem('user-coordinates')),
@@ -253,7 +251,7 @@ async function changeToLoggedIn(info) {
       restaurantInfo.city,
       restaurantInfo.company,
       restaurantInfo._id,
-      coordinatesFlipped,
+      restaurantInfo.location.coordinates,
       distance
     );
 
@@ -378,6 +376,37 @@ export function initUiEventListeners() {
       userTakenElem.innerText = 'Käyttäjätunnus varattu!';
       usernameElem.value = '';
       return;
+    }
+  });
+
+  // FILTERING
+  const cityFilter = document.querySelector('#city-filter');
+  const providerFilter = document.querySelector('#provider-filter');
+  const filterBtn = document.querySelector('#filter-button');
+  const restaurants = JSON.parse(localStorage.getItem('restaurants'));
+
+  filterBtn.addEventListener('click', () => {
+    const city = cityFilter.value;
+    const provider = providerFilter.value;
+
+    console.log('inputs: ', city, provider);
+
+    const filteredRestaurants = filterRestaurants(restaurants, city, provider);
+    restaurantSection.innerText = '';
+
+    for (let restaurant of filteredRestaurants) {
+      restaurantSection.appendChild(
+        createRestaurantCard(
+          restaurant.name,
+          restaurant.address,
+          restaurant.postalCode,
+          restaurant.city,
+          restaurant.company,
+          restaurant._id,
+          restaurant.location.coordinates,
+          restaurant.distanceFromUser
+        )
+      );
     }
   });
 }

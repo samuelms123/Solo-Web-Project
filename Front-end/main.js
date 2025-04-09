@@ -8,6 +8,7 @@ import {sortRestaurantsByDistance} from './lib/utils.js';
 async function main() {
   const restaurants = await getRestaurants();
   const sortedRestaurants = await sortRestaurantsByDistance(restaurants);
+  localStorage.setItem('restaurants', JSON.stringify(sortedRestaurants));
   initMap(restaurants);
   initRestaurants(sortedRestaurants);
   initUiEventListeners();
