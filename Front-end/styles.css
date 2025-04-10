@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'MyFont';
-  src: url('assets/InterTight-Black.ttf') format('truetype');
+  src: url('public/InterTight-Black.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'MyFont2';
-  src: url('assets/InterTight-Light.ttf') format('truetype');
+  src: url('public/InterTight-Light.ttf') format('truetype');
 }
 
 html {
@@ -84,6 +84,10 @@ button {
 button:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:focus {
+  outline: none;
 }
 
 .container {
@@ -178,6 +182,19 @@ main {
 
 .heart-btn:hover {
   color: red;
+  box-shadow: none;
+}
+
+.heart-btn-favorited {
+  font-size: 24px;
+  border: none;
+  background: none;
+  color: red;
+  transition: color 0.3s ease;
+}
+
+.heart-btn-favorited:hover {
+  color: black;
   box-shadow: none;
 }
 

@@ -2,7 +2,11 @@
 
 import {login} from '../api/auth.js';
 import {getMenu, getRestaurantById} from '../api/restaurant.js';
-import {checkUsernameAvailability, createUser} from '../api/user.js';
+import {
+  checkUsernameAvailability,
+  createUser,
+  modifyUserData,
+} from '../api/user.js';
 import {filterRestaurants} from './filter.js';
 import {moveMapTo} from './map.js';
 import {calculateDistance, scrollToMenu} from './utils.js';
@@ -143,6 +147,29 @@ function createRestaurantCard(
   favoriteBtn.classList.add('heart-btn');
   favoriteBtn.innerText = '♡';
 
+  favoriteBtn.addEventListener('click', async () => {
+    if (loggedIn.value) {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      const favouriteRestaurant = userData.favouriteRestaurant;
+      console.log('Ravintolaid', id);
+      if (id == favouriteRestaurant) {
+        console.log('restaurant already your favourite!');
+        return;
+      } else {
+        const authToken = localStorage.getItem('authToken');
+        const result = await modifyUserData(
+          {favouriteRestaurant: id},
+          authToken
+        );
+        result ? updateFavoriteRestaurant(id) : console.log('failed!!!');
+      }
+    } else {
+      const signInModal = document.querySelector('#sign-in-modal');
+      signInModal.showModal();
+      return;
+    }
+  });
+
   cardHeader.append(restaurantName, favoriteBtn);
 
   // Card actions
@@ -221,6 +248,39 @@ function setInfo(info, restaurantInfo) {
   }
 }
 
+async function updateFavoriteRestaurant(id) {
+  const favouriteRestaurantSection = document.querySelector(
+    '#favourite-restaurant'
+  );
+  const userInfoRestaurant = document.querySelector('#info-restaurant');
+
+  favouriteRestaurantSection.innerText = '';
+  favouriteRestaurantSection.classList.contains('hidden') &&
+    favouriteRestaurantSection.classList.remove('hidden');
+
+  const restaurantInfo = await getRestaurantById(id);
+
+  const distance = calculateDistance(
+    JSON.parse(localStorage.getItem('user-coordinates')),
+    restaurantInfo.location.coordinates
+  ).toFixed(0);
+
+  const restaurantCard = createRestaurantCard(
+    restaurantInfo.name,
+    restaurantInfo.address,
+    restaurantInfo.postalCode,
+    restaurantInfo.city,
+    restaurantInfo.company,
+    restaurantInfo._id,
+    restaurantInfo.location.coordinates,
+    distance
+  );
+
+  favouriteRestaurantSection.appendChild(restaurantCard);
+
+  userInfoRestaurant.placeholder = restaurantInfo.name;
+}
+
 async function changeToLoggedIn(info) {
   loggedIn.value = true;
   const signInBtn = document.querySelector('#sign-in');
@@ -229,7 +289,7 @@ async function changeToLoggedIn(info) {
   const userDataModal = document.querySelector('#userdata-modal');
   UserInfoBtn.classList.remove('hidden');
   signInBtn.innerText = 'Kirjaudu ulos';
-  localStorage.setItem('userData', info);
+  localStorage.setItem('userData', JSON.stringify(info));
   let restaurantInfo;
   if (info.favouriteRestaurant) {
     const favouriteRestaurantSection = document.querySelector(
@@ -316,6 +376,7 @@ export function initUiEventListeners() {
     } else {
       //kirjaudu ulos
       localStorage.clear();
+      loggedIn.value = false;
       location.reload();
     }
   });

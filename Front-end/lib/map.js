@@ -1,7 +1,9 @@
 let map;
+//import restoIcon from '/restaurant-icon.png'; // VITE BUILD
 
 const restaurantIcon = L.icon({
-  iconUrl: 'assets/restaurant-icon.png',
+  iconUrl: 'public/restaurant-icon.png', // dev
+  //iconUrl: restoIcon,  // VITE BUILD
   iconSize: [30, 30],
 });
 

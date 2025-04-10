@@ -5,6 +5,32 @@ TESTIUKKO
     'sam.sar@metropolia.fi'
 */
 
+export async function modifyUserData(data, token) {
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  };
+  try {
+    const response = await fetch(
+      `https://media2.edu.metropolia.fi/restaurant/api/v1/users`,
+      options
+    );
+    const json = await response.json();
+    if (!response.ok) {
+      console.error('Server rejected the request:', json);
+      return null;
+    }
+    return json;
+  } catch (error) {
+    console.log(error, ' Error happened while updating user data.');
+    return null;
+  }
+}
+
 export async function createUser(username, password, email) {
   const userData = {
     username: username,
@@ -67,7 +93,7 @@ export async function getUserInfo(token) {
   };
   try {
     const response = await fetch(
-      `https://media2.edu.metropolia.fi/restaurant//api/v1/users/token`,
+      `https://media2.edu.metropolia.fi/restaurant/api/v1/users/token`,
       options
     );
     if (!response.ok) {
