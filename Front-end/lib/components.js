@@ -225,6 +225,8 @@ async function changeToLoggedIn(info) {
   loggedIn.value = true;
   const signInBtn = document.querySelector('#sign-in');
   const UserInfoBtn = document.querySelector('#user-info');
+  const infoExitBtn = document.querySelector('#userdata-exit');
+  const userDataModal = document.querySelector('#userdata-modal');
   UserInfoBtn.classList.remove('hidden');
   signInBtn.innerText = 'Kirjaudu ulos';
   localStorage.setItem('userData', info);
@@ -260,10 +262,14 @@ async function changeToLoggedIn(info) {
 
   UserInfoBtn.addEventListener('click', () => {
     // modal auki
-    const userDataModal = document.querySelector('#userdata-modal');
     userDataModal.showModal();
     console.log(localStorage.getItem('userData'));
   });
+
+  infoExitBtn.addEventListener('click', () => {
+    userDataModal.close();
+  });
+
   setInfo(info, restaurantInfo); // set userinfo to 'omat tiedot'
 }
 
@@ -320,12 +326,14 @@ export function initUiEventListeners() {
     registerModal.showModal();
   });
 
+  // LOGIN
   const signInUserForm = document.querySelector('#sign-in-user');
   const signInUsernameElem = document.querySelector('#username');
   const SignInPasswordElem = document.querySelector('#password');
   const inputMessageElem = document.querySelector('#message');
+  const loginExitBtn = document.querySelector('#sign-in-exit');
+  const signBtn = document.querySelector('#sign-in-user-btn');
 
-  // LOGIN
   signInUserForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const username = signInUsernameElem.value;
@@ -337,26 +345,46 @@ export function initUiEventListeners() {
     if (result != null) {
       localStorage.setItem('authToken', result.token);
       inputMessageElem.innerText = `Tervetuloa, ${result.data.username}`;
+      signBtn.disabled = true;
       changeToLoggedIn(result.data);
+      setTimeout(() => {
+        signInModal.close();
+        signInBtn.disabled = false;
+      }, 1000);
     } else {
       inputMessageElem.innerText = 'Väärä käyttäjätunnus/salasana';
       SignInPasswordElem.value = '';
     }
   });
 
+  loginExitBtn.addEventListener('click', () => {
+    signInUsernameElem.value = '';
+    SignInPasswordElem.value = '';
+    signBtn.disabled = false;
+    signInModal.close();
+  });
+
+  // REGISTER
   const registerUserForm = document.querySelector('#register-user');
   const usernameElem = document.querySelector('#new-username');
   const passwordElem = document.querySelector('#new-password');
   const emailElem = document.querySelector('#email');
   const userTakenElem = document.querySelector('#user-taken');
+  const registerExitBtn = document.querySelector('#register-exit');
 
   registerUserForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const username = usernameElem.value;
     const password = passwordElem.value;
     const email = emailElem.value;
+    console.log(username, password, email);
 
     const checkUsername = await checkUsernameAvailability(username);
+    if (password.length < 5) {
+      userTakenElem.innerText = 'Salasana liian lyhyt (min 5)';
+      passwordElem.value = '';
+      return;
+    }
 
     if (checkUsername.available) {
       console.log('käyttäjä vapaa!');
@@ -370,6 +398,11 @@ export function initUiEventListeners() {
         usernameElem.value = '';
         emailElem.value = '';
         passwordElem.value = '';
+        setTimeout(() => {
+          registerModal.close();
+          signInModal.showModal();
+          userTakenElem.innerText = '';
+        }, 1000);
       }
     } else {
       console.log('käyttäjä varattu!');
@@ -377,6 +410,13 @@ export function initUiEventListeners() {
       usernameElem.value = '';
       return;
     }
+  });
+
+  registerExitBtn.addEventListener('click', () => {
+    usernameElem.value = '';
+    passwordElem.value = '';
+    emailElem.value = '';
+    registerModal.close();
   });
 
   // FILTERING

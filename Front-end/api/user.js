@@ -6,7 +6,6 @@ TESTIUKKO
 */
 
 export async function createUser(username, password, email) {
-  //const hashedPassword = bcrypt.hashSync(password, 10);
   const userData = {
     username: username,
     password: password,
@@ -29,6 +28,8 @@ export async function createUser(username, password, email) {
     );
 
     if (!response.ok) {
+      const errorData = await response.json();
+      console.log('Server error response:', errorData);
       throw new Error('Invalid input!');
     }
 

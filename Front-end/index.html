@@ -30,6 +30,7 @@
     </header>
     <main>
       <dialog id="userdata-modal" class="modal">
+        <button id="userdata-exit" class="exit-button">&#10005</button>
         <h2>Käyttäjätiedot</h2>
         <form id="userdata">
           <input id="info-username" type="text" disabled />
@@ -40,30 +41,28 @@
             placeholder="Ei suosikki ravintolaa!"
             disabled
           />
-          <!-- <img
-            id="info-avatar"
-            src="https://picsum.photos/seed/picsum/200/300"
-          /> -->
         </form>
-        <button id="edit-info">Muokkaa</button>
+        <button class="modal-button" id="edit-info">Muokkaa</button>
       </dialog>
       <dialog id="sign-in-modal" class="modal">
+        <button id="sign-in-exit" class="exit-button">&#10005</button>
         <h2>Kirjaudu sisään</h2>
         <p id="message" class="message-output"></p>
         <form id="sign-in-user">
           <input id="username" type="text" placeholder="Käyttäjätunnus" />
           <input id="password" type="password" placeholder="Salasana" />
-          <button type="submit">Kirjaudu</button>
+          <button id="sign-in-user-btn" class="modal-button" type="submit">Kirjaudu</button>
         </form>
       </dialog>
       <dialog id="register-modal" class="modal">
+        <button id="register-exit" class="exit-button">&#10005</button>
         <h2>Rekisteröidy</h2>
         <p id="user-taken" class="message-output"></p>
         <form id="register-user">
           <input id="new-username" type="text" placeholder="Käyttäjätunnus" />
           <input id="new-password" type="password" placeholder="Salasana" />
           <input id="email" type="email" placeholder="Sähköposti" />
-          <button type="submit">Rekisteröidy</button>
+          <button class="modal-button" type="submit">Rekisteröidy</button>
         </form>
       </dialog>
       <div class="container">

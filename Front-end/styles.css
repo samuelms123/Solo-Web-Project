@@ -248,6 +248,7 @@ p {
 }
 
 .modal {
+  position: relative;
   width: 30%;
   text-align: center;
   border: none;
@@ -283,10 +284,25 @@ p {
   border: 0.5px solid rgb(118, 118, 118);
 }
 
-.modal button {
+.modal-button {
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
+}
+
+.exit-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.exit-button:hover {
+  transform: translateY(-3px);
+  box-shadow: none;
 }
 
 .modal label {
