@@ -65,9 +65,15 @@ function error(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
+let lastLocation;
+
 export function moveMapTo(coordinates, zoom = 15) {
+  if (lastLocation === coordinates && window.innerWidth >= 1200) {
+    return;
+  }
   map.flyTo(coordinates, zoom, {
     duration: 1.5,
     easeLinearity: 0.25,
   });
+  lastLocation = coordinates;
 }

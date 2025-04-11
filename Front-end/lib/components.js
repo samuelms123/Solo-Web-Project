@@ -132,7 +132,10 @@ function createRestaurantCard(
   const coordinatesFlipped = [coordinates[1], coordinates[0]];
 
   restaurantCard.addEventListener('click', function () {
-    moveMapTo(coordinatesFlipped);
+    if (window.innerWidth >= 1200) {
+      moveMapTo(coordinatesFlipped);
+    }
+    return;
   });
 
   // Card-header
@@ -287,6 +290,7 @@ async function changeToLoggedIn(info) {
   const UserInfoBtn = document.querySelector('#user-info');
   const infoExitBtn = document.querySelector('#userdata-exit');
   const userDataModal = document.querySelector('#userdata-modal');
+  document.querySelector('#favorite-header').classList.remove('hidden');
   UserInfoBtn.classList.remove('hidden');
   signInBtn.innerText = 'Kirjaudu ulos';
   localStorage.setItem('userData', JSON.stringify(info));
