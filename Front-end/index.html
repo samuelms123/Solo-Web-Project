@@ -33,8 +33,11 @@
         <button id="userdata-exit" class="exit-button">&#10005;</button>
         <h2>Käyttäjätiedot</h2>
         <form id="userdata">
+          <p>Käyttäjätunnus</p>
           <input id="info-username" type="text" disabled />
+          <p>Sähköposti</p>
           <input id="info-email" type="text" disabled />
+          <p>Suosikki ravintola</p>
           <input
             id="info-restaurant"
             type="text"
@@ -109,7 +112,7 @@
             </select>
             <button id="filter-button">Suodata</button>
           </section>
-          <h2>Ravintolat</h2>
+          <h2 id="restaurants-header">Ravintolat</h2>
           <section id="restaurants"></section>
           <section id="menu">
             <div class="selection">

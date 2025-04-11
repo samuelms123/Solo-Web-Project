@@ -9,7 +9,12 @@ import {
 } from '../api/user.js';
 import {filterRestaurants} from './filter.js';
 import {moveMapTo} from './map.js';
-import {calculateDistance, scrollToMenu} from './utils.js';
+import {
+  calculateDistance,
+  scrollToMenu,
+  scrollToRestaurants,
+  scrollToTop,
+} from './utils.js';
 import {dailyBtn, weeklyBtn, menuType, loggedIn} from './variables.js';
 
 let currentRestaurantName;
@@ -30,7 +35,8 @@ export function initRestaurants(restaurants) {
         restaurant.company,
         restaurant._id,
         restaurant.location.coordinates,
-        restaurant.distanceFromUser
+        restaurant.distanceFromUser,
+        false
       )
     );
   }
@@ -124,7 +130,8 @@ function createRestaurantCard(
   provider,
   id,
   coordinates,
-  distanceFromUser
+  distanceFromUser,
+  isFavouriteRestaurant
 ) {
   // Card
   const restaurantCard = document.createElement('div');
@@ -147,13 +154,19 @@ function createRestaurantCard(
   restaurantName.innerText = name;
 
   const favoriteBtn = document.createElement('button');
-  favoriteBtn.classList.add('heart-btn');
+  if (isFavouriteRestaurant) {
+    favoriteBtn.classList.add('heart-btn-favorited');
+    favoriteBtn.disabled = true;
+  } else {
+    favoriteBtn.classList.add('heart-btn');
+  }
   favoriteBtn.innerText = '♡';
 
   favoriteBtn.addEventListener('click', async () => {
     if (loggedIn.value) {
       const userData = JSON.parse(localStorage.getItem('userData'));
       const favouriteRestaurant = userData.favouriteRestaurant;
+      console.log('favrestaurant is : ', favouriteRestaurant);
       console.log('Ravintolaid', id);
       if (id == favouriteRestaurant) {
         console.log('restaurant already your favourite!');
@@ -164,7 +177,12 @@ function createRestaurantCard(
           {favouriteRestaurant: id},
           authToken
         );
-        result ? updateFavoriteRestaurant(id) : console.log('failed!!!');
+        if (result) {
+          updateFavoriteRestaurant(id);
+          userData.favouriteRestaurant = id;
+          scrollToTop();
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
       }
     } else {
       const signInModal = document.querySelector('#sign-in-modal');
@@ -251,6 +269,8 @@ function setInfo(info, restaurantInfo) {
   }
 }
 
+function editInfo() {}
+
 async function updateFavoriteRestaurant(id) {
   const favouriteRestaurantSection = document.querySelector(
     '#favourite-restaurant'
@@ -276,7 +296,8 @@ async function updateFavoriteRestaurant(id) {
     restaurantInfo.company,
     restaurantInfo._id,
     restaurantInfo.location.coordinates,
-    distance
+    distance,
+    true
   );
 
   favouriteRestaurantSection.appendChild(restaurantCard);
@@ -318,7 +339,8 @@ async function changeToLoggedIn(info) {
       restaurantInfo.company,
       restaurantInfo._id,
       restaurantInfo.location.coordinates,
-      distance
+      distance,
+      true
     );
 
     favouriteRestaurantSection.appendChild(restaurantCard);
@@ -337,181 +359,202 @@ async function changeToLoggedIn(info) {
   setInfo(info, restaurantInfo); // set userinfo to 'omat tiedot'
 }
 
-export function initUiEventListeners() {
-  window.addEventListener('scroll', () => {
-    let header = document.querySelector('header');
-    if (window.scrollY > 10) {
-      header.classList.add('header-moving');
-    } else {
-      header.classList.remove('header-moving');
+// EDIT USER INFO
+const editButton = document.querySelector('#edit-info');
+
+editButton.addEventListener('click', () => {
+  const username = document.querySelector('#info-username');
+  const email = document.querySelector('#info-email');
+
+  username.disabled = false;
+  email.disabled = false;
+  editButton.innerText = 'Tallenna';
+  editButton.type = 'submit';
+});
+
+const userDataModal = document.querySelector('#userdata-modal');
+userDataModal.addEventListener('submit', (event) => {
+  event.preventDefault();
+  // const username = document.querySelector('#info-username');
+  // const email = document.querySelector('#info-email');
+  // // editInfo(username.value, email.value)
+});
+
+window.addEventListener('scroll', () => {
+  let header = document.querySelector('header');
+  if (window.scrollY > 10) {
+    header.classList.add('header-moving');
+  } else {
+    header.classList.remove('header-moving');
+  }
+});
+
+// WEEKLY / DAILY BUTTONS
+weeklyBtn.addEventListener('click', () => {
+  if (!weeklyBtn.classList.contains('selected')) {
+    weeklyBtn.classList.add('selected');
+    dailyBtn.classList.remove('selected');
+    menuType.value = 'weekly';
+    console.log('Weekly selected');
+    if (currentRestaurantName && currentWeeklyMenu) {
+      displayWeeklyMenu(currentRestaurantName, currentWeeklyMenu);
     }
-  });
+  }
+});
 
-  // WEEKLY / DAILY BUTTONS
-  weeklyBtn.addEventListener('click', () => {
-    if (!weeklyBtn.classList.contains('selected')) {
-      weeklyBtn.classList.add('selected');
-      dailyBtn.classList.remove('selected');
-      menuType.value = 'weekly';
-      console.log('Weekly selected');
-      if (currentRestaurantName && currentWeeklyMenu) {
-        displayWeeklyMenu(currentRestaurantName, currentWeeklyMenu);
-      }
+dailyBtn.addEventListener('click', () => {
+  if (!dailyBtn.classList.contains('selected')) {
+    dailyBtn.classList.add('selected');
+    weeklyBtn.classList.remove('selected');
+    menuType.value = 'daily';
+    console.log('Daily selected');
+    if (currentRestaurantName && currentDailyMenu) {
+      displayDailyMenu(currentRestaurantName, currentDailyMenu);
     }
-  });
+  }
+});
 
-  dailyBtn.addEventListener('click', () => {
-    if (!dailyBtn.classList.contains('selected')) {
-      dailyBtn.classList.add('selected');
-      weeklyBtn.classList.remove('selected');
-      menuType.value = 'daily';
-      console.log('Daily selected');
-      if (currentRestaurantName && currentDailyMenu) {
-        displayDailyMenu(currentRestaurantName, currentDailyMenu);
-      }
-    }
-  });
+const signInBtn = document.querySelector('#sign-in');
+const signInModal = document.querySelector('#sign-in-modal');
+signInBtn.addEventListener('click', () => {
+  if (!loggedIn.value) {
+    signInModal.showModal();
+  } else {
+    //kirjaudu ulos
+    localStorage.clear();
+    loggedIn.value = false;
+    location.reload();
+  }
+});
 
-  const signInBtn = document.querySelector('#sign-in');
-  const signInModal = document.querySelector('#sign-in-modal');
-  signInBtn.addEventListener('click', () => {
-    if (!loggedIn.value) {
-      signInModal.showModal();
-    } else {
-      //kirjaudu ulos
-      localStorage.clear();
-      loggedIn.value = false;
-      location.reload();
-    }
-  });
+const registerBtn = document.querySelector('#register');
+const registerModal = document.querySelector('#register-modal');
+registerBtn.addEventListener('click', () => {
+  registerModal.showModal();
+});
 
-  const registerBtn = document.querySelector('#register');
-  const registerModal = document.querySelector('#register-modal');
-  registerBtn.addEventListener('click', () => {
-    registerModal.showModal();
-  });
+// LOGIN
+const signInUserForm = document.querySelector('#sign-in-user');
+const signInUsernameElem = document.querySelector('#username');
+const SignInPasswordElem = document.querySelector('#password');
+const inputMessageElem = document.querySelector('#message');
+const loginExitBtn = document.querySelector('#sign-in-exit');
+const signBtn = document.querySelector('#sign-in-user-btn');
 
-  // LOGIN
-  const signInUserForm = document.querySelector('#sign-in-user');
-  const signInUsernameElem = document.querySelector('#username');
-  const SignInPasswordElem = document.querySelector('#password');
-  const inputMessageElem = document.querySelector('#message');
-  const loginExitBtn = document.querySelector('#sign-in-exit');
-  const signBtn = document.querySelector('#sign-in-user-btn');
+signInUserForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const username = signInUsernameElem.value;
+  const password = SignInPasswordElem.value;
 
-  signInUserForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const username = signInUsernameElem.value;
-    const password = SignInPasswordElem.value;
+  const result = await login(username, password);
+  console.log('result', result.data);
 
-    const result = await login(username, password);
-    console.log('result', result.data);
-
-    if (result != null) {
-      localStorage.setItem('authToken', result.token);
-      inputMessageElem.innerText = `Tervetuloa, ${result.data.username}`;
-      signBtn.disabled = true;
-      changeToLoggedIn(result.data);
-      setTimeout(() => {
-        signInModal.close();
-        signInBtn.disabled = false;
-      }, 1000);
-    } else {
-      inputMessageElem.innerText = 'Väärä käyttäjätunnus/salasana';
-      SignInPasswordElem.value = '';
-    }
-  });
-
-  loginExitBtn.addEventListener('click', () => {
-    signInUsernameElem.value = '';
+  if (result != null) {
+    localStorage.setItem('authToken', result.token);
+    inputMessageElem.innerText = `Tervetuloa, ${result.data.username}`;
+    signBtn.disabled = true;
+    changeToLoggedIn(result.data);
+    setTimeout(() => {
+      signInModal.close();
+      signInBtn.disabled = false;
+    }, 1000);
+  } else {
+    inputMessageElem.innerText = 'Väärä käyttäjätunnus/salasana';
     SignInPasswordElem.value = '';
-    signBtn.disabled = false;
-    signInModal.close();
-  });
+  }
+});
 
-  // REGISTER
-  const registerUserForm = document.querySelector('#register-user');
-  const usernameElem = document.querySelector('#new-username');
-  const passwordElem = document.querySelector('#new-password');
-  const emailElem = document.querySelector('#email');
-  const userTakenElem = document.querySelector('#user-taken');
-  const registerExitBtn = document.querySelector('#register-exit');
+loginExitBtn.addEventListener('click', () => {
+  signInUsernameElem.value = '';
+  SignInPasswordElem.value = '';
+  signBtn.disabled = false;
+  signInModal.close();
+});
 
-  registerUserForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const username = usernameElem.value;
-    const password = passwordElem.value;
-    const email = emailElem.value;
-    console.log(username, password, email);
+// REGISTER
+const registerUserForm = document.querySelector('#register-user');
+const usernameElem = document.querySelector('#new-username');
+const passwordElem = document.querySelector('#new-password');
+const emailElem = document.querySelector('#email');
+const userTakenElem = document.querySelector('#user-taken');
+const registerExitBtn = document.querySelector('#register-exit');
 
-    const checkUsername = await checkUsernameAvailability(username);
-    if (password.length < 5) {
-      userTakenElem.innerText = 'Salasana liian lyhyt (min 5)';
-      passwordElem.value = '';
-      return;
-    }
+registerUserForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const username = usernameElem.value;
+  const password = passwordElem.value;
+  const email = emailElem.value;
+  console.log(username, password, email);
 
-    if (checkUsername.available) {
-      console.log('käyttäjä vapaa!');
-      const result = await createUser(username, password, email);
-      if (result == null) {
-        userTakenElem.innerText = 'Sähköposti varattu!';
-        emailElem.value = '';
-        return;
-      } else {
-        userTakenElem.innerText = 'Rekisteröinti onnistui!';
-        usernameElem.value = '';
-        emailElem.value = '';
-        passwordElem.value = '';
-        setTimeout(() => {
-          registerModal.close();
-          signInModal.showModal();
-          userTakenElem.innerText = '';
-        }, 1000);
-      }
-    } else {
-      console.log('käyttäjä varattu!');
-      userTakenElem.innerText = 'Käyttäjätunnus varattu!';
-      usernameElem.value = '';
-      return;
-    }
-  });
-
-  registerExitBtn.addEventListener('click', () => {
-    usernameElem.value = '';
+  const checkUsername = await checkUsernameAvailability(username);
+  if (password.length < 5) {
+    userTakenElem.innerText = 'Salasana liian lyhyt (min 5)';
     passwordElem.value = '';
-    emailElem.value = '';
-    registerModal.close();
-  });
+    return;
+  }
 
-  // FILTERING
-  const cityFilter = document.querySelector('#city-filter');
-  const providerFilter = document.querySelector('#provider-filter');
-  const filterBtn = document.querySelector('#filter-button');
-  const restaurants = JSON.parse(localStorage.getItem('restaurants'));
-
-  filterBtn.addEventListener('click', () => {
-    const city = cityFilter.value;
-    const provider = providerFilter.value;
-
-    console.log('inputs: ', city, provider);
-
-    const filteredRestaurants = filterRestaurants(restaurants, city, provider);
-    restaurantSection.innerText = '';
-
-    for (let restaurant of filteredRestaurants) {
-      restaurantSection.appendChild(
-        createRestaurantCard(
-          restaurant.name,
-          restaurant.address,
-          restaurant.postalCode,
-          restaurant.city,
-          restaurant.company,
-          restaurant._id,
-          restaurant.location.coordinates,
-          restaurant.distanceFromUser
-        )
-      );
+  if (checkUsername.available) {
+    console.log('käyttäjä vapaa!');
+    const result = await createUser(username, password, email);
+    if (result == null) {
+      userTakenElem.innerText = 'Sähköposti varattu!';
+      emailElem.value = '';
+      return;
+    } else {
+      userTakenElem.innerText = 'Rekisteröinti onnistui!';
+      usernameElem.value = '';
+      emailElem.value = '';
+      passwordElem.value = '';
+      setTimeout(() => {
+        registerModal.close();
+        signInModal.showModal();
+        userTakenElem.innerText = '';
+      }, 1000);
     }
-  });
-}
+  } else {
+    console.log('käyttäjä varattu!');
+    userTakenElem.innerText = 'Käyttäjätunnus varattu!';
+    usernameElem.value = '';
+    return;
+  }
+});
+
+registerExitBtn.addEventListener('click', () => {
+  usernameElem.value = '';
+  passwordElem.value = '';
+  emailElem.value = '';
+  registerModal.close();
+});
+
+// FILTERING
+const cityFilter = document.querySelector('#city-filter');
+const providerFilter = document.querySelector('#provider-filter');
+const filterBtn = document.querySelector('#filter-button');
+const restaurants = JSON.parse(localStorage.getItem('restaurants'));
+
+filterBtn.addEventListener('click', () => {
+  const city = cityFilter.value;
+  const provider = providerFilter.value;
+
+  console.log('inputs: ', city, provider);
+
+  const filteredRestaurants = filterRestaurants(restaurants, city, provider);
+  restaurantSection.innerText = '';
+
+  for (let restaurant of filteredRestaurants) {
+    restaurantSection.appendChild(
+      createRestaurantCard(
+        restaurant.name,
+        restaurant.address,
+        restaurant.postalCode,
+        restaurant.city,
+        restaurant.company,
+        restaurant._id,
+        restaurant.location.coordinates,
+        restaurant.distanceFromUser,
+        false
+      )
+    );
+  }
+  scrollToRestaurants();
+});

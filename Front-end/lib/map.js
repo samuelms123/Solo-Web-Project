@@ -48,7 +48,7 @@ function success(pos, restaurants) {
 
   L.marker([crd.latitude, crd.longitude])
     .addTo(map)
-    .bindPopup('I am here.')
+    .bindPopup('Olet tässä!')
     .openPopup();
 
   // Restaurants to map
@@ -68,7 +68,8 @@ function error(err) {
 let lastLocation;
 
 export function moveMapTo(coordinates, zoom = 15) {
-  if (lastLocation === coordinates && window.innerWidth >= 1200) {
+  if (lastLocation == coordinates) {
+    console.log('same location not moving map');
     return;
   }
   map.flyTo(coordinates, zoom, {

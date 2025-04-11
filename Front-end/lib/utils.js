@@ -11,6 +11,25 @@ export function scrollToMenu() {
   });
 }
 
+export function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+}
+
+export function scrollToRestaurants() {
+  const target = document.querySelector('#restaurants-header');
+  const offset = 100;
+
+  const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+
+  window.scrollTo({
+    top: targetPosition - offset,
+    behavior: 'smooth',
+  });
+}
+
 /**
  *
  * @param {number[]} start geoJSON point 1
