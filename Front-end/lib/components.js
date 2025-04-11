@@ -17,12 +17,51 @@ import {
 } from './utils.js';
 import {dailyBtn, weeklyBtn, menuType, loggedIn} from './variables.js';
 
+let header = document.querySelector('header');
 let currentRestaurantName;
 let currentWeeklyMenu;
 let currentDailyMenu;
 
+const registerBtn = document.querySelector('#register');
+const registerModal = document.querySelector('#register-modal');
+
+const signInBtn = document.querySelector('#sign-in');
+const signInModal = document.querySelector('#sign-in-modal');
+
 const restaurantSection = document.querySelector('#restaurants');
 const menuCard = document.querySelector('.menu-card');
+// User info
+const infoUsername = document.querySelector('#info-username');
+const infoEmail = document.querySelector('#info-email');
+const infoFavRestaurant = document.querySelector('#info-restaurant');
+const editButton = document.querySelector('#edit-info');
+
+const favouriteRestaurantSection = document.querySelector(
+  '#favourite-restaurant'
+);
+
+const signInUserForm = document.querySelector('#sign-in-user');
+const signInUsernameElem = document.querySelector('#username');
+const signInPasswordElem = document.querySelector('#password');
+const inputMessageElem = document.querySelector('#message');
+const loginExitBtn = document.querySelector('#sign-in-exit');
+const signBtn = document.querySelector('#sign-in-user-btn');
+
+const registerUserForm = document.querySelector('#register-user');
+const usernameElem = document.querySelector('#new-username');
+const passwordElem = document.querySelector('#new-password');
+const emailElem = document.querySelector('#email');
+const userTakenElem = document.querySelector('#user-taken');
+const registerExitBtn = document.querySelector('#register-exit');
+
+const UserInfoBtn = document.querySelector('#user-info');
+const infoExitBtn = document.querySelector('#userdata-exit');
+const userDataModal = document.querySelector('#userdata-modal');
+
+const cityFilter = document.querySelector('#city-filter');
+const providerFilter = document.querySelector('#provider-filter');
+const filterBtn = document.querySelector('#filter-button');
+const restaurants = JSON.parse(localStorage.getItem('restaurants'));
 
 export function initRestaurants(restaurants) {
   for (let restaurant of restaurants) {
@@ -45,7 +84,7 @@ export function initRestaurants(restaurants) {
 function displayMenuNotFound(restaurantName) {
   menuCard.innerHTML = '';
 
-  const notFoundElem = document.createElement('h3');
+  const notFoundElem = document.createElement('h4');
   notFoundElem.innerText = `Ravintola ${restaurantName} lista ei saatavilla.`;
   menuCard.append(notFoundElem);
 }
@@ -185,7 +224,6 @@ function createRestaurantCard(
         }
       }
     } else {
-      const signInModal = document.querySelector('#sign-in-modal');
       signInModal.showModal();
       return;
     }
@@ -257,24 +295,17 @@ function createRestaurantCard(
 }
 
 function setInfo(info, restaurantInfo) {
-  const username = document.querySelector('#info-username');
-  const email = document.querySelector('#info-email');
-  const favRestaurant = document.querySelector('#info-restaurant');
-
-  username.placeholder = info.username;
-  email.placeholder = info.email;
+  infoUsername.placeholder = info.username;
+  infoEmail.placeholder = info.email;
 
   if (restaurantInfo) {
-    favRestaurant.placeholder = restaurantInfo.name;
+    infoFavRestaurant.placeholder = restaurantInfo.name;
   }
 }
 
 function editInfo() {}
 
 async function updateFavoriteRestaurant(id) {
-  const favouriteRestaurantSection = document.querySelector(
-    '#favourite-restaurant'
-  );
   const userInfoRestaurant = document.querySelector('#info-restaurant');
 
   favouriteRestaurantSection.innerText = '';
@@ -307,19 +338,12 @@ async function updateFavoriteRestaurant(id) {
 
 async function changeToLoggedIn(info) {
   loggedIn.value = true;
-  const signInBtn = document.querySelector('#sign-in');
-  const UserInfoBtn = document.querySelector('#user-info');
-  const infoExitBtn = document.querySelector('#userdata-exit');
-  const userDataModal = document.querySelector('#userdata-modal');
   document.querySelector('#favorite-header').classList.remove('hidden');
   UserInfoBtn.classList.remove('hidden');
   signInBtn.innerText = 'Kirjaudu ulos';
   localStorage.setItem('userData', JSON.stringify(info));
   let restaurantInfo;
   if (info.favouriteRestaurant) {
-    const favouriteRestaurantSection = document.querySelector(
-      '#favourite-restaurant'
-    );
     favouriteRestaurantSection.classList.remove('hidden');
     console.log('favouriteRESTAURANT!', info.favouriteRestaurant);
 
@@ -360,19 +384,14 @@ async function changeToLoggedIn(info) {
 }
 
 // EDIT USER INFO
-const editButton = document.querySelector('#edit-info');
 
 editButton.addEventListener('click', () => {
-  const username = document.querySelector('#info-username');
-  const email = document.querySelector('#info-email');
-
-  username.disabled = false;
-  email.disabled = false;
+  infoUsername.disabled = false;
+  infoEmail.disabled = false;
   editButton.innerText = 'Tallenna';
   editButton.type = 'submit';
 });
 
-const userDataModal = document.querySelector('#userdata-modal');
 userDataModal.addEventListener('submit', (event) => {
   event.preventDefault();
   // const username = document.querySelector('#info-username');
@@ -382,7 +401,6 @@ userDataModal.addEventListener('submit', (event) => {
 
 export function initUiEventListeners() {
   window.addEventListener('scroll', () => {
-    let header = document.querySelector('header');
     if (window.scrollY > 10) {
       header.classList.add('header-moving');
     } else {
@@ -415,8 +433,6 @@ export function initUiEventListeners() {
     }
   });
 
-  const signInBtn = document.querySelector('#sign-in');
-  const signInModal = document.querySelector('#sign-in-modal');
   signInBtn.addEventListener('click', () => {
     if (!loggedIn.value) {
       signInModal.showModal();
@@ -428,24 +444,16 @@ export function initUiEventListeners() {
     }
   });
 
-  const registerBtn = document.querySelector('#register');
-  const registerModal = document.querySelector('#register-modal');
   registerBtn.addEventListener('click', () => {
     registerModal.showModal();
   });
 
   // LOGIN
-  const signInUserForm = document.querySelector('#sign-in-user');
-  const signInUsernameElem = document.querySelector('#username');
-  const SignInPasswordElem = document.querySelector('#password');
-  const inputMessageElem = document.querySelector('#message');
-  const loginExitBtn = document.querySelector('#sign-in-exit');
-  const signBtn = document.querySelector('#sign-in-user-btn');
 
   signInUserForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const username = signInUsernameElem.value;
-    const password = SignInPasswordElem.value;
+    const password = signInPasswordElem.value;
 
     const result = await login(username, password);
     console.log('result', result.data);
@@ -461,24 +469,18 @@ export function initUiEventListeners() {
       }, 1000);
     } else {
       inputMessageElem.innerText = 'Väärä käyttäjätunnus/salasana';
-      SignInPasswordElem.value = '';
+      signInPasswordElem.value = '';
     }
   });
 
   loginExitBtn.addEventListener('click', () => {
     signInUsernameElem.value = '';
-    SignInPasswordElem.value = '';
+    signInPasswordElem.value = '';
     signBtn.disabled = false;
     signInModal.close();
   });
 
   // REGISTER
-  const registerUserForm = document.querySelector('#register-user');
-  const usernameElem = document.querySelector('#new-username');
-  const passwordElem = document.querySelector('#new-password');
-  const emailElem = document.querySelector('#email');
-  const userTakenElem = document.querySelector('#user-taken');
-  const registerExitBtn = document.querySelector('#register-exit');
 
   registerUserForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -528,10 +530,6 @@ export function initUiEventListeners() {
   });
 
   // FILTERING
-  const cityFilter = document.querySelector('#city-filter');
-  const providerFilter = document.querySelector('#provider-filter');
-  const filterBtn = document.querySelector('#filter-button');
-  const restaurants = JSON.parse(localStorage.getItem('restaurants'));
 
   filterBtn.addEventListener('click', () => {
     const city = cityFilter.value;
