@@ -35,6 +35,7 @@ const infoUsername = document.querySelector('#info-username');
 const infoEmail = document.querySelector('#info-email');
 const infoFavRestaurant = document.querySelector('#info-restaurant');
 const editButton = document.querySelector('#edit-info');
+const saveButton = document.querySelector('#save-info');
 
 const favouriteRestaurantSection = document.querySelector(
   '#favourite-restaurant'
@@ -61,7 +62,6 @@ const userDataModal = document.querySelector('#userdata-modal');
 const cityFilter = document.querySelector('#city-filter');
 const providerFilter = document.querySelector('#provider-filter');
 const filterBtn = document.querySelector('#filter-button');
-const restaurants = JSON.parse(localStorage.getItem('restaurants'));
 
 export function initRestaurants(restaurants) {
   for (let restaurant of restaurants) {
@@ -375,6 +375,10 @@ async function changeToLoggedIn(info) {
 
   infoExitBtn.addEventListener('click', () => {
     userDataModal.close();
+    infoUsername.disabled = true;
+    infoEmail.disabled = true;
+    saveButton.disabled = true;
+    editButton.disabled = false;
   });
 
   setInfo(info, restaurantInfo); // set userinfo to 'omat tiedot'
@@ -385,6 +389,8 @@ async function changeToLoggedIn(info) {
 editButton.addEventListener('click', () => {
   infoUsername.disabled = false;
   infoEmail.disabled = false;
+  saveButton.disabled = false;
+  editButton.disabled = true;
 });
 
 userDataModal.addEventListener('submit', (event) => {
@@ -526,6 +532,7 @@ export function initUiEventListeners() {
   filterBtn.addEventListener('click', () => {
     const city = cityFilter.value;
     const provider = providerFilter.value;
+    const restaurants = JSON.parse(localStorage.getItem('restaurants'));
 
     console.log('inputs: ', city, provider);
 
