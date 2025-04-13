@@ -303,8 +303,6 @@ function setInfo(info, restaurantInfo) {
   }
 }
 
-function editInfo() {}
-
 async function updateFavoriteRestaurant(id) {
   const userInfoRestaurant = document.querySelector('#info-restaurant');
 
@@ -373,7 +371,6 @@ async function changeToLoggedIn(info) {
   UserInfoBtn.addEventListener('click', () => {
     // modal auki
     userDataModal.showModal();
-    console.log(localStorage.getItem('userData'));
   });
 
   infoExitBtn.addEventListener('click', () => {
@@ -388,15 +385,11 @@ async function changeToLoggedIn(info) {
 editButton.addEventListener('click', () => {
   infoUsername.disabled = false;
   infoEmail.disabled = false;
-  editButton.innerText = 'Tallenna';
-  editButton.type = 'submit';
 });
 
 userDataModal.addEventListener('submit', (event) => {
   event.preventDefault();
-  // const username = document.querySelector('#info-username');
-  // const email = document.querySelector('#info-email');
-  // // editInfo(username.value, email.value)
+  // edit
 });
 
 export function initUiEventListeners() {
@@ -456,9 +449,8 @@ export function initUiEventListeners() {
     const password = signInPasswordElem.value;
 
     const result = await login(username, password);
-    console.log('result', result.data);
 
-    if (result != null) {
+    if (result && result.token && result.data) {
       localStorage.setItem('authToken', result.token);
       inputMessageElem.innerText = `Tervetuloa, ${result.data.username}`;
       signBtn.disabled = true;
