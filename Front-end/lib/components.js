@@ -5,6 +5,7 @@ import {getMenu, getRestaurantById} from '../api/restaurant.js';
 import {
   checkUsernameAvailability,
   createUser,
+  getUserInfo,
   modifyUserData,
 } from '../api/user.js';
 import {filterRestaurants} from './filter.js';
@@ -36,6 +37,7 @@ const infoEmail = document.querySelector('#info-email');
 const infoFavRestaurant = document.querySelector('#info-restaurant');
 const editButton = document.querySelector('#edit-info');
 const saveButton = document.querySelector('#save-info');
+const infoOutputMessage = document.querySelector('#userinfo-message');
 
 const favouriteRestaurantSection = document.querySelector(
   '#favourite-restaurant'
@@ -294,14 +296,16 @@ function createRestaurantCard(
   return restaurantCard;
 }
 
-function setInfo(info, restaurantInfo) {
-  infoUsername.placeholder = info.username;
-  infoEmail.placeholder = info.email;
+// async function setInfo() {
+//   const info = JSON.parse(localStorage.getItem('userData'));
+//   infoUsername.placeholder = info.username;
+//   infoEmail.placeholder = info.email;
 
-  if (restaurantInfo) {
-    infoFavRestaurant.placeholder = restaurantInfo.name;
-  }
-}
+//   if (info.favouriteRestaurant) {
+//     const restaurantInfo = await getRestaurantById(info.favouriteRestaurant);
+//     infoFavRestaurant.placeholder = restaurantInfo.name;
+//   }
+// }
 
 async function updateFavoriteRestaurant(id) {
   const userInfoRestaurant = document.querySelector('#info-restaurant');
@@ -368,20 +372,27 @@ async function changeToLoggedIn(info) {
     favouriteRestaurantSection.appendChild(restaurantCard);
   }
 
-  UserInfoBtn.addEventListener('click', () => {
+  UserInfoBtn.addEventListener('click', async () => {
     // modal auki
+    const info = JSON.parse(localStorage.getItem('userData'));
+    infoUsername.value = info.username;
+    infoEmail.value = info.email;
+
+    if (info.favouriteRestaurant) {
+      const restaurantInfo = await getRestaurantById(info.favouriteRestaurant);
+      infoFavRestaurant.value = restaurantInfo.name;
+    }
     userDataModal.showModal();
   });
 
   infoExitBtn.addEventListener('click', () => {
     userDataModal.close();
+    infoOutputMessage.innerText = '';
     infoUsername.disabled = true;
     infoEmail.disabled = true;
     saveButton.disabled = true;
     editButton.disabled = false;
   });
-
-  setInfo(info, restaurantInfo); // set userinfo to 'omat tiedot'
 }
 
 // EDIT USER INFO
@@ -393,9 +404,58 @@ editButton.addEventListener('click', () => {
   editButton.disabled = true;
 });
 
-userDataModal.addEventListener('submit', (event) => {
+async function checkIfModified(username, email) {
+  let data = {};
+  const previousUserData = JSON.parse(localStorage.getItem('userData'));
+  const previousUsername = previousUserData.username;
+  const previousEmail = previousUserData.email;
+
+  if (previousUsername !== username) {
+    const available = await checkUsernameAvailability(username);
+    console.log('available:', available);
+    if (!available.available) return null;
+    data.username = username;
+  }
+
+  if (previousEmail !== email) {
+    data.email = email;
+  }
+  console.log('data', data);
+  return data;
+}
+
+userDataModal.addEventListener('submit', async (event) => {
   event.preventDefault();
-  // edit
+  const username = infoUsername.value;
+  const email = infoEmail.value;
+  const token = localStorage.getItem('authToken');
+  console.log('username', username);
+  console.log('email', email);
+  const newData = await checkIfModified(username, email);
+  if (newData === null) {
+    infoOutputMessage.innerText = 'Käyttäjätunnus varattu';
+    return;
+  } else if (Object.keys(newData).length === 0) {
+    console.log('unmodified');
+    return;
+  } else {
+    const result = await modifyUserData(newData, token);
+    if (result != null) {
+      infoOutputMessage.innerText = 'Muokkaus tallennettu';
+      const newInfo = await getUserInfo(token);
+      localStorage.setItem('userData', JSON.stringify(newInfo));
+      setTimeout(() => {
+        userDataModal.close();
+        infoOutputMessage.innerText = '';
+        infoUsername.disabled = true;
+        infoEmail.disabled = true;
+        saveButton.disabled = true;
+        editButton.disabled = false;
+      }, 1500);
+    } else {
+      infoOutputMessage.innerText = 'Sähköposti varattu';
+    }
+  }
 });
 
 export function initUiEventListeners() {
