@@ -378,7 +378,7 @@ footer {
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 60px;
+    top: 100px;
     right: 0;
     background-color: white;
     width: 100%;
@@ -386,8 +386,27 @@ footer {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
+  .full-width li {
+    padding: 0;
+    margin: 0;
+  }
+
+  .modal {
+    width: 100vw;
+  }
+
+  .full-width button {
+    width: 100vw;
+  }
+
+  .full-width button:hover {
+    transform: none;
+    background-color: #7c7c7c;
+  }
+
   .hamburger-menu {
     display: block;
+    margin-left: 20px;
   }
 
   .restaurant-card {

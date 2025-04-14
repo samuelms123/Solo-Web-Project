@@ -616,4 +616,11 @@ export function initUiEventListeners() {
     }
     scrollToRestaurants();
   });
+
+  const hamburgerBtn = document.querySelector('.hamburger-menu');
+  const navMenu = document.querySelector('.full-width');
+
+  hamburgerBtn.addEventListener('click', () => {
+    navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+  });
 }
