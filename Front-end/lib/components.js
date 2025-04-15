@@ -10,6 +10,7 @@ import {
 } from '../api/user.js';
 import {filterRestaurants} from './filter.js';
 import {moveMapTo} from './map.js';
+import {comparePasswords} from './password.js';
 import {
   calculateDistance,
   scrollToMenu,
@@ -38,6 +39,19 @@ const infoFavRestaurant = document.querySelector('#info-restaurant');
 const editButton = document.querySelector('#edit-info');
 const saveButton = document.querySelector('#save-info');
 const infoOutputMessage = document.querySelector('#userinfo-message');
+const changePasswordBtn = document.querySelector('#change-password-btn');
+
+// Change password
+const passwordModal = document.querySelector('#password-modal');
+// const submitNewPassword = document.querySelector('#submit-new-password');
+const passwordExitBtn = document.querySelector('#password-exit');
+const oldPassword = document.querySelector('#change-password-old-password');
+const newPassword = document.querySelector('#change-password-new-password');
+const newPasswordRetype = document.querySelector(
+  '#change-password-new-password-retype'
+);
+const passwordForm = document.querySelector('#password-form');
+const passwordOutputMessage = document.querySelector('#password-message');
 
 const favouriteRestaurantSection = document.querySelector(
   '#favourite-restaurant'
@@ -296,17 +310,6 @@ function createRestaurantCard(
   return restaurantCard;
 }
 
-// async function setInfo() {
-//   const info = JSON.parse(localStorage.getItem('userData'));
-//   infoUsername.placeholder = info.username;
-//   infoEmail.placeholder = info.email;
-
-//   if (info.favouriteRestaurant) {
-//     const restaurantInfo = await getRestaurantById(info.favouriteRestaurant);
-//     infoFavRestaurant.placeholder = restaurantInfo.name;
-//   }
-// }
-
 async function updateFavoriteRestaurant(id) {
   const userInfoRestaurant = document.querySelector('#info-restaurant');
 
@@ -340,6 +343,7 @@ async function updateFavoriteRestaurant(id) {
 
 async function changeToLoggedIn(info) {
   loggedIn.value = true;
+  registerBtn.classList.add('hidden');
   document.querySelector('#favorite-header').classList.remove('hidden');
   UserInfoBtn.classList.remove('hidden');
   signInBtn.innerText = 'Kirjaudu ulos';
@@ -423,7 +427,7 @@ async function checkIfModified(username, email) {
   console.log('data', data);
   return data;
 }
-
+// USER INFO
 userDataModal.addEventListener('submit', async (event) => {
   event.preventDefault();
   const username = infoUsername.value;
@@ -455,6 +459,66 @@ userDataModal.addEventListener('submit', async (event) => {
     } else {
       infoOutputMessage.innerText = 'Sähköposti varattu';
     }
+  }
+});
+
+// CHANGE PASSWORD
+changePasswordBtn.addEventListener('click', () => {
+  passwordModal.showModal();
+});
+
+function clearPasswordFields() {
+  oldPassword.value = '';
+  newPassword.value = '';
+  newPasswordRetype.value = '';
+}
+
+passwordExitBtn.addEventListener('click', () => {
+  clearPasswordFields();
+  passwordOutputMessage.innerText = '';
+  passwordModal.close();
+});
+
+passwordForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const userData = JSON.parse(localStorage.getItem('userData'));
+
+  const logInResult = await login(userData.username, oldPassword.value);
+
+  if (logInResult === null) {
+    passwordOutputMessage.innerText = 'Väärä salasana!';
+    clearPasswordFields();
+    return;
+  }
+
+  if (!comparePasswords(newPassword.value, newPasswordRetype.value)) {
+    passwordOutputMessage.innerText = 'Salasanat ei täsmää!';
+    clearPasswordFields();
+    return;
+  }
+
+  if (newPassword.value.length < 5 || newPasswordRetype.value < 5) {
+    passwordOutputMessage.innerText = 'Uusi salasana liian lyhyt! (min 5)';
+    clearPasswordFields();
+    return;
+  }
+
+  const token = localStorage.getItem('authToken');
+  const newData = {
+    password: newPassword.value,
+  };
+
+  const result = await modifyUserData(newData, token);
+
+  if (result != null) {
+    passwordOutputMessage.innerText = 'Salasana vaihdettu!';
+    clearPasswordFields();
+    setTimeout(() => {
+      passwordModal.close();
+    }, 1000);
+  } else {
+    passwordOutputMessage.innerText = 'Epäonnistui..';
+    clearPasswordFields();
   }
 });
 

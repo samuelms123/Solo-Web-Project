@@ -291,6 +291,7 @@ p {
 
 .message-output {
   margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .modal input {

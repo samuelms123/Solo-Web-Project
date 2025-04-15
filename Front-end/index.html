@@ -29,6 +29,22 @@
       </nav>
     </header>
     <main>
+      <dialog id="password-modal" class="modal">
+        <button id="password-exit" class="exit-button">&#10005;</button>
+        <h2>Vaihda salasana</h2>
+        <p id="password-message" class="message-output"></p>
+        <form id="password-form">
+          <p>Vanha salasana</p>
+          <input id="change-password-old-password" type="password" />
+          <p>Uusi salasana</p>
+          <input id="change-password-new-password" type="password" />
+          <p>Uusi salasana</p>
+          <input id="change-password-new-password-retype" type="password" />
+          <button class="modal-button" id="submit-new-password" type="submit">
+            Tallenna
+          </button>
+        </form>
+      </dialog>
       <dialog id="userdata-modal" class="modal">
         <button id="userdata-exit" class="exit-button">&#10005;</button>
         <h2>Käyttäjätiedot</h2>
@@ -48,6 +64,9 @@
           <button class="modal-button" id="edit-info">Muokkaa</button>
           <button class="modal-button" id="save-info" type="submit" disabled>
             Tallenna
+          </button>
+          <button class="modal-button" id="change-password-btn" type="button">
+            Vaihda salasana
           </button>
         </form>
       </dialog>
