@@ -31,6 +31,7 @@ export async function getRestaurants() {
     return json;
   } catch (error) {
     console.log(error, ' Error happened while fetching restaurant data.');
+    return null;
   }
 }
 
