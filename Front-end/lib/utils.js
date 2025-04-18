@@ -81,13 +81,8 @@ export async function sortRestaurantsByDistance(restaurants) {
       })
       .sort((a, b) => a.distanceFromUser - b.distanceFromUser);
 
-    console.log('sorting done!');
     return sortedRestaurants;
   } catch (error) {
-    console.log('error in sorting restaurants!', error);
     return restaurants;
   }
 }
-
-// const d = calculateDistance([24.950631, 60.169096], [24.946847, 60.194701]);
-// console.log('distance', d);

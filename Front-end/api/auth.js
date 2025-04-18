@@ -11,7 +11,6 @@ export async function login(username, password) {
     },
     body: JSON.stringify(userData),
   };
-  console.log(options);
 
   try {
     const response = await fetch(
@@ -24,10 +23,8 @@ export async function login(username, password) {
     }
 
     const json = await response.json();
-    console.log(json);
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while logging in.');
     return null;
   }
 }

@@ -30,7 +30,6 @@ export async function getRestaurants() {
     const json = await response.json();
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while fetching restaurant data.');
     return null;
   }
 }
@@ -46,7 +45,6 @@ export async function getRestaurantById(id) {
     const json = await response.json();
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while fetching restaurant data.');
     return null;
   }
 }

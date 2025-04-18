@@ -221,10 +221,7 @@ function createRestaurantCard(
     if (loggedIn.value) {
       const userData = JSON.parse(localStorage.getItem('userData'));
       const favouriteRestaurant = userData.favouriteRestaurant;
-      console.log('favrestaurant is : ', favouriteRestaurant);
-      console.log('Ravintolaid', id);
       if (id == favouriteRestaurant) {
-        console.log('restaurant already your favourite!');
         return;
       } else {
         const authToken = localStorage.getItem('authToken');
@@ -274,7 +271,6 @@ function createRestaurantCard(
   menuBtn.addEventListener('click', async function () {
     const menu = await getMenu(menuType.value, id);
     currentRestaurantName = name;
-    console.log(menu);
     if (menuType.value === 'daily') {
       currentDailyMenu = menu;
       if (menu.courses.length > 0) {
@@ -283,7 +279,6 @@ function createRestaurantCard(
         // get weekly menu in advance
         currentWeeklyMenu = await getMenu('weekly', id);
       } else {
-        console.log('no menu found!');
         displayMenuNotFound(name);
         scrollToMenu();
       }
@@ -291,12 +286,10 @@ function createRestaurantCard(
       currentWeeklyMenu = menu;
       if (menu.days.length > 0) {
         displayWeeklyMenu(name, menu);
-        console.log('Displaying weekly menu!');
         scrollToMenu();
         // get daily menu in advance
         currentDailyMenu = await getMenu('daily', id);
       } else {
-        console.log('no menu found!');
         displayMenuNotFound(name);
         scrollToMenu();
       }
@@ -351,10 +344,8 @@ async function changeToLoggedIn(info) {
   let restaurantInfo;
   if (info.favouriteRestaurant) {
     favouriteRestaurantSection.classList.remove('hidden');
-    console.log('favouriteRESTAURANT!', info.favouriteRestaurant);
 
     restaurantInfo = await getRestaurantById(info.favouriteRestaurant);
-    console.log('restaurantINFOcoords', restaurantInfo.location.coordinates);
 
     const distance = calculateDistance(
       JSON.parse(localStorage.getItem('user-coordinates')),
@@ -416,7 +407,6 @@ async function checkIfModified(username, email) {
 
   if (previousUsername !== username) {
     const available = await checkUsernameAvailability(username);
-    console.log('available:', available);
     if (!available.available) return null;
     data.username = username;
   }
@@ -424,7 +414,6 @@ async function checkIfModified(username, email) {
   if (previousEmail !== email) {
     data.email = email;
   }
-  console.log('data', data);
   return data;
 }
 // USER INFO
@@ -433,14 +422,11 @@ userDataModal.addEventListener('submit', async (event) => {
   const username = infoUsername.value;
   const email = infoEmail.value;
   const token = localStorage.getItem('authToken');
-  console.log('username', username);
-  console.log('email', email);
   const newData = await checkIfModified(username, email);
   if (newData === null) {
     infoOutputMessage.innerText = 'Käyttäjätunnus varattu';
     return;
   } else if (Object.keys(newData).length === 0) {
-    console.log('unmodified');
     return;
   } else {
     const result = await modifyUserData(newData, token);
@@ -537,7 +523,6 @@ export function initUiEventListeners() {
       weeklyBtn.classList.add('selected');
       dailyBtn.classList.remove('selected');
       menuType.value = 'weekly';
-      console.log('Weekly selected');
       if (currentRestaurantName && currentWeeklyMenu) {
         displayWeeklyMenu(currentRestaurantName, currentWeeklyMenu);
       }
@@ -549,7 +534,6 @@ export function initUiEventListeners() {
       dailyBtn.classList.add('selected');
       weeklyBtn.classList.remove('selected');
       menuType.value = 'daily';
-      console.log('Daily selected');
       if (currentRestaurantName && currentDailyMenu) {
         displayDailyMenu(currentRestaurantName, currentDailyMenu);
       }
@@ -609,7 +593,6 @@ export function initUiEventListeners() {
     const username = usernameElem.value;
     const password = passwordElem.value;
     const email = emailElem.value;
-    console.log(username, password, email);
 
     const checkUsername = await checkUsernameAvailability(username);
     if (password.length < 5) {
@@ -619,7 +602,6 @@ export function initUiEventListeners() {
     }
 
     if (checkUsername.available) {
-      console.log('käyttäjä vapaa!');
       const result = await createUser(username, password, email);
       if (result == null) {
         userTakenElem.innerText = 'Sähköposti varattu!';
@@ -637,7 +619,6 @@ export function initUiEventListeners() {
         }, 1000);
       }
     } else {
-      console.log('käyttäjä varattu!');
       userTakenElem.innerText = 'Käyttäjätunnus varattu!';
       usernameElem.value = '';
       return;
@@ -657,8 +638,6 @@ export function initUiEventListeners() {
     const city = cityFilter.value;
     const provider = providerFilter.value;
     const restaurants = JSON.parse(localStorage.getItem('restaurants'));
-
-    console.log('inputs: ', city, provider);
 
     const filteredRestaurants = filterRestaurants(restaurants, city, provider);
     restaurantSection.innerText = '';

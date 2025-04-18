@@ -3,7 +3,7 @@ let map;
 
 const restaurantIcon = L.icon({
   iconUrl: 'public/restaurant-icon.png', // dev
-  //iconUrl: restoIcon,  // VITE BUILD
+  //iconUrl: restoIcon, // VITE BUILD
   iconSize: [30, 30],
 });
 
@@ -23,21 +23,11 @@ export function initMap(restaurants) {
 
 function success(pos, restaurants) {
   const crd = pos.coords;
-  console.log('coordinates', crd);
-  //crd.latitude, crd.longitude omiin koordinaatteihin
-
-  // Printing location information to the console
-  console.log('Your current position is:');
-  console.log(`Latitude : ${crd.latitude}`);
-  console.log(`Longitude: ${crd.longitude}`);
-  console.log(`More or less ${crd.accuracy} meters.`);
 
   localStorage.setItem(
     'user-coordinates',
     JSON.stringify([pos.coords.longitude, pos.coords.latitude])
   );
-
-  console.log('fadfdsfasfa', localStorage.getItem('user-coordinates'));
 
   // Use the leaflet.js library to show the location on the map (https://leafletjs.com/)
   map = L.map('map').setView([crd.latitude, crd.longitude], 13);
@@ -69,7 +59,6 @@ let lastLocation;
 
 export function moveMapTo(coordinates, zoom = 15) {
   if (lastLocation == coordinates) {
-    console.log('same location not moving map');
     return;
   }
   map.flyTo(coordinates, zoom, {

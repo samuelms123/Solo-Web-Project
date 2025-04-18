@@ -1,10 +1,3 @@
-/*
-TESTIUKKO
-    'samuelms123',
-    'salasana',
-    'sam.sar@metropolia.fi'
-*/
-
 export async function modifyUserData(data, token) {
   const options = {
     method: 'PUT',
@@ -21,12 +14,10 @@ export async function modifyUserData(data, token) {
     );
     const json = await response.json();
     if (!response.ok) {
-      console.error('Server rejected the request:', json);
       return null;
     }
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while updating user data.');
     return null;
   }
 }
@@ -45,7 +36,6 @@ export async function createUser(username, password, email) {
     },
     body: JSON.stringify(userData),
   };
-  console.log(options);
 
   try {
     const response = await fetch(
@@ -54,16 +44,12 @@ export async function createUser(username, password, email) {
     );
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.log('Server error response:', errorData);
       throw new Error('Invalid input!');
     }
 
     const json = await response.json();
-    console.log(json);
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while creating user.');
     return null;
   }
 }
@@ -79,7 +65,7 @@ export async function checkUsernameAvailability(username) {
     const json = await response.json();
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while fetching restaurant data.');
+    console.log(error);
   }
 }
 
@@ -102,7 +88,6 @@ export async function getUserInfo(token) {
     const json = await response.json();
     return json;
   } catch (error) {
-    console.log(error, ' Error happened while fetching menu data.');
     return null;
   }
 }
